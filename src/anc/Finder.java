@@ -1,8 +1,12 @@
 package anc;
 
+import org.junit.Test;
+
+import java.util.Arrays;
+
 public class Finder {
 
-    void findMth2Nth(int[] a, int l, int r, int m, int n) {
+    static void findMth2Nth(int[] a, int l, int r, int m, int n) {
         if (l > r)
             return;
         if (l == r && l == m) {
@@ -36,7 +40,20 @@ public class Finder {
         }
     }
 
-    void findKth(int[] a, int l, int r, int k) {
+    static void findKth(int[] a, int l, int r, int k) {
         findMth2Nth(a, l, r, k, k);
+    }
+
+    static void findTopK(int[] a, int l, int r, int k) {
+        findKth(a, l, r, k);
+    }
+
+    @Test
+    public void testFindTopK() {
+        int[] a = Util.getIntArrayDataSet("d:/dataset");
+        findTopK(a, 0, a.length -1, 10);
+        System.out.println(Arrays.toString(a));
+        Arrays.sort(a);
+        System.out.println(Arrays.toString(a));
     }
 }

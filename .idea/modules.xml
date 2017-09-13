@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/code-fragment.iml" filepath="$PROJECT_DIR$/.idea/code-fragment.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../finesoft/test/pfc/pfc.iml" filepath="$PROJECT_DIR$/../finesoft/test/pfc/pfc.iml" />
     </modules>
   </component>
 </project>
