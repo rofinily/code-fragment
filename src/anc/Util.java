@@ -28,36 +28,19 @@ public class Util {
         }
     }
 
-    public static boolean checkSortResult(int[] a, Sort.Type type) {
-        if (a.length == 1) {
-            return true;
-        }
-        for (int i = 0, len = a.length; i < len - 1; i++) {
-            if (type.compare(a[i], a[i + 1]) < 0) {
-                return false;
-            }
-        }
-        return true;
+    /**
+     * a = A, b = B
+     * a ^ a = 0
+     * b = b ^ 0 = b ^ (a^a) = (a^b) ^ a
+     * <p>
+     * a = a ^ b; a: A^B, b: B
+     * b = a ^ b; a: A^B, b: A^B^B = A
+     * a = a ^ b; a: A^B^A = B, b: A
+     */
+    public static void swap(int[] a, int p1, int p2) {
+        a[p1] = a[p1] ^ a[p2];
+        a[p2] = a[p1] ^ a[p2];
+        a[p1] = a[p1] ^ a[p2];
     }
 
-    public static class Sort {
-        public enum Type {
-            ASC() {
-                @Override
-                public int compare(int a, int b) {
-                    return a - b;
-                }
-            },
-            DESC() {
-                @Override
-                public int compare(int a, int b) {
-                    return b - a;
-                }
-            };
-
-            public int compare(int a, int b) {
-                throw new UnsupportedOperationException();
-            }
-        }
-    }
 }

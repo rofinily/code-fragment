@@ -51,7 +51,7 @@ public class Finder {
     @Test
     public void testFindTopK() {
         int[] a = Util.getIntArrayDataSet("d:/dataset");
-        findTopK(a, 0, a.length -1, 10);
+        findTopK(a, 0, a.length - 1, 10);
         System.out.println(Arrays.toString(a));
         Arrays.sort(a);
         System.out.println(Arrays.toString(a));

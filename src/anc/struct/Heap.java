@@ -1,5 +1,6 @@
 package anc.struct;
 
+import anc.Sort;
 import anc.Util;
 
 import java.util.Arrays;
@@ -9,12 +10,12 @@ public class Heap {
     private final Type TYPE = Type.MAX_TOP;
 
     private enum Type {
-        MAX_TOP(Util.Sort.Type.DESC),
-        MIN_TOP(Util.Sort.Type.ASC);
+        MAX_TOP(Sort.Type.DESC),
+        MIN_TOP(Sort.Type.ASC);
 
-        Util.Sort.Type sortType;
+        Sort.Type sortType;
 
-        Type(Util.Sort.Type sortType) {
+        Type(Sort.Type sortType) {
             this.sortType = sortType;
         }
 
@@ -34,7 +35,7 @@ public class Heap {
         if (!isLeaf(left(i), len)) {
             adjust(left(i), len);
         }
-        if (compare(a[i], a[left(i)]) > 0) {
+        if (compare(a[i], a[left(i)]) < 0) {
             swap(i, left(i));
             adjust(left(i), len);
         }
@@ -43,7 +44,7 @@ public class Heap {
             if (!isLeaf(right(i), len)) {
                 adjust(right(i), len);
             }
-            if (compare(a[i], a[right(i)]) > 0) {
+            if (compare(a[i], a[right(i)]) < 0) {
                 swap(i, right(i));
                 adjust(right(i), len);
             }
@@ -60,11 +61,11 @@ public class Heap {
     private boolean check() {
         for (int i = 0, len = a.length; i < len / 2; i++) {
             if (hasLeft(i, len)) {
-                if (compare(a[i], a[left(i)]) > 0) {
+                if (compare(a[i], a[left(i)]) < 0) {
                     return false;
                 }
                 if (hasRight(i, len)) {
-                    if (compare(a[i], a[right(i)]) > 0) {
+                    if (compare(a[i], a[right(i)]) < 0) {
                         return false;
                     }
                 }
@@ -77,7 +78,7 @@ public class Heap {
         Heap h = new Heap();
         h.build();
         h.sort();
-        System.out.println(Util.checkSortResult(h.a, h.TYPE.sortType));
+        System.out.println(Sort.checkResult(h.a, h.TYPE.sortType.reverse()));
         System.out.println(Arrays.toString(h.a));
     }
 
@@ -105,19 +106,7 @@ public class Heap {
         return TYPE.compare(a, b);
     }
 
-    /**
-     * a = A, b = B
-     * a ^ a = 0
-     * b = b ^ 0 = b ^ (a^a) = (a^b) ^ a
-     *
-     * a = a ^ b; a: A^B, b: B
-     * b = a ^ b; a: A^B, b: A^B^B = A
-     * a = a ^ b; a: A^B^A = B, b: A
-     *
-     */
     private void swap(int p1, int p2) {
-        a[p1] = a[p1] ^ a[p2];
-        a[p2] = a[p1] ^ a[p2];
-        a[p1] = a[p1] ^ a[p2];
+        Util.swap(a, p1, p2);
     }
 }
