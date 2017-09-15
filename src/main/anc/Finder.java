@@ -1,5 +1,9 @@
 package anc;
 
+import anc.global.Util;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 
 public class Finder {
@@ -10,7 +14,7 @@ public class Finder {
 
     public Finder(int[] a, Sort.Type sortType) {
         if (a == null || a.length == 0) {
-            throw new IllegalArgumentException("array is null");
+            throw new IllegalArgumentException("array is empty");
         }
         this.a = a;
         this.sortType = sortType == null ? DEFAULT_SORT_TYPE : sortType;
@@ -20,8 +24,8 @@ public class Finder {
         this(a, DEFAULT_SORT_TYPE);
     }
 
-    public Finder() {
-        this(Util.getIntArrayDataSet("d:/dataset"), DEFAULT_SORT_TYPE);
+    public Finder() throws FileNotFoundException {
+        this(Util.getIntArrayDataSet(new FileInputStream("d:/dataset")), DEFAULT_SORT_TYPE);
     }
 
     private void findMth2Nth0(int l, int r, int m, int n) {
@@ -34,7 +38,7 @@ public class Finder {
                 tr = r,
                 p = a[r];
         while (l < r) {
-            while (l < r && sortType.compare(a[l], p) >= 0)
+            while (l < r && sortType.compare(a[l], p) > 0)
                 l++;
             a[r] = a[l];
             while (l < r && sortType.compare(a[r], p) < 0)
@@ -88,8 +92,8 @@ public class Finder {
         return findMth2Nth(0, k);
     }
 
-    public static void main(String[] args) {
-        Finder f = new Finder(new int[]{2,1});
+    public static void main(String[] args) throws FileNotFoundException {
+        Finder f = new Finder();
         int[] a = f.findSortedTopK(20);
 //        f.findMth2Nth(0, f.a.length - 1, 10, 20);
         System.out.println(Arrays.toString(a));

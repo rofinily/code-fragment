@@ -2,7 +2,7 @@ package anc;
 
 public class Sort {
     public static boolean checkResult(int[] a, Type type) {
-        if (a.length == 1) {
+        if (a.length < 2) {
             return true;
         }
         for (int i = 0, len = a.length; i < len - 1; i++) {
@@ -32,7 +32,7 @@ public class Sort {
         }
 
         public Type reverse() {
-            return this == ASC ? DESC : ASC;
+            return this == ASC ? DESC : this;
         }
     }
 }

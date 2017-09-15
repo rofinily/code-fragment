@@ -1,13 +1,18 @@
 package anc.struct;
 
 import anc.Sort;
-import anc.Util;
+import anc.global.Util;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 
 public class Heap {
-    private int[] a = Util.getIntArrayDataSet("d:/dataset");
-    private final Type TYPE = Type.MAX_TOP;
+    private int[] a = Util.getIntArrayDataSet(new FileInputStream("d:/dataset"));
+    private  Type type = Type.MAX_TOP;
+
+    public Heap() throws FileNotFoundException {
+    }
 
     private enum Type {
         MAX_TOP(Sort.Type.DESC),
@@ -74,11 +79,11 @@ public class Heap {
         return true;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         Heap h = new Heap();
         h.build();
         h.sort();
-        System.out.println(Sort.checkResult(h.a, h.TYPE.sortType.reverse()));
+        System.out.println(Sort.checkResult(h.a, h.type.sortType.reverse()));
         System.out.println(Arrays.toString(h.a));
     }
 
@@ -103,7 +108,7 @@ public class Heap {
     }
 
     private int compare(int a, int b) {
-        return TYPE.compare(a, b);
+        return type.compare(a, b);
     }
 
     private void swap(int p1, int p2) {
