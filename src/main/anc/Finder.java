@@ -1,6 +1,7 @@
 package anc;
 
-import anc.global.Util;
+import anc.global.DataSetUtil;
+import anc.global.Sort;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,7 +26,7 @@ public class Finder {
     }
 
     public Finder() throws FileNotFoundException {
-        this(Util.getIntArrayDataSet(new FileInputStream("d:/dataset")), DEFAULT_SORT_TYPE);
+        this(DataSetUtil.getIntArray(new FileInputStream("d:/dataset")), DEFAULT_SORT_TYPE);
     }
 
     private void findMth2Nth0(int l, int r, int m, int n) {

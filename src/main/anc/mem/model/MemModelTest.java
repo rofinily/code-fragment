@@ -1,4 +1,4 @@
-package anc.memory.model;
+package anc.mem.model;
 
 import anc.global.Util;
 

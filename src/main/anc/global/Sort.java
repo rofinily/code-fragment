@@ -1,4 +1,4 @@
-package anc;
+package anc.global;
 
 public class Sort {
     public static boolean checkResult(int[] a, Type type) {

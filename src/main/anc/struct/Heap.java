@@ -1,6 +1,7 @@
 package anc.struct;
 
-import anc.Sort;
+import anc.global.DataSetUtil;
+import anc.global.Sort;
 import anc.global.Util;
 
 import java.io.FileInputStream;
@@ -8,8 +9,8 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 
 public class Heap {
-    private int[] a = Util.getIntArrayDataSet(new FileInputStream("d:/dataset"));
-    private  Type type = Type.MAX_TOP;
+    private int[] a = DataSetUtil.getIntArray(new FileInputStream("d:/dataset"));
+    private Type type = Type.MAX_TOP;
 
     public Heap() throws FileNotFoundException {
     }
