@@ -1,14 +1,16 @@
 package anc.algorithm;
 
-import anc.global.DataSetUtil;
-import anc.global.Util;
+import anc.util.DataSetUtil;
+import anc.util.Sort;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 
 public class Permutation implements Action {
-    int[] a = DataSetUtil.getIntArray(new FileInputStream("d:/dataset"));
+    int[] a = DataSetUtil.getIntArray(
+            DataSetUtil.getInputStream(new File("d:/dataset"))
+    );
 
     public Permutation() throws FileNotFoundException {
     }
@@ -31,13 +33,7 @@ public class Permutation implements Action {
     }
 
     private void swapIfNeed(int p1, int p2) {
-        if (p1 == p2) {
-            return;
-        }
-        if (a[p1] == a[p2]) {
-            return;
-        }
-        Util.swap(a, p1, p2);
+        Sort.swapIfNeed(a, p1, p2);
     }
 
     public static void main(String[] args) throws FileNotFoundException {

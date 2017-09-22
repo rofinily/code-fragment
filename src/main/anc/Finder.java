@@ -1,9 +1,12 @@
 package anc;
 
-import anc.global.DataSetUtil;
-import anc.global.Sort;
 
-import java.io.FileInputStream;
+import anc.util.DataSetUtil;
+import anc.util.Sort;
+import org.junit.After;
+import org.junit.Test;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 
@@ -25,8 +28,8 @@ public class Finder {
         this(a, DEFAULT_SORT_TYPE);
     }
 
-    public Finder() throws FileNotFoundException {
-        this(DataSetUtil.getIntArray(new FileInputStream("d:/dataset")), DEFAULT_SORT_TYPE);
+    public Finder() {
+        this(genDataSet(), DEFAULT_SORT_TYPE);
     }
 
     private void findMth2Nth0(int l, int r, int m, int n) {
@@ -93,6 +96,12 @@ public class Finder {
         return findMth2Nth(0, k);
     }
 
+    private static int[] genDataSet() {
+        return DataSetUtil.getIntArray(
+                DataSetUtil.getInputStream(new File("d:/dataset"))
+        );
+    }
+
     public static void main(String[] args) throws FileNotFoundException {
         Finder f = new Finder();
         int[] a = f.findSortedTopK(20);
@@ -100,4 +109,47 @@ public class Finder {
         System.out.println(Arrays.toString(a));
     }
 
+}
+
+
+class FinderTest {
+    Finder finder = new Finder();
+//    int[] a = finder.a;
+
+    @Test
+    public void testFindMth2Nth() throws Exception {
+//        prepare();
+//
+//        int m = a.length / 10,
+//                n = a.length / 2;
+//        finder.findMth2Nth(m, n);
+//
+//        assertTrue(checkResult(a, m, n));
+    }
+
+    @Test
+    public void testFindKth() throws FileNotFoundException {
+//        prepare();
+//
+//        int k = a.length / 2;
+//        finder.findMth2Nth(k, k);
+//
+//        assertTrue(checkResult(a, k, k));
+    }
+
+
+    @After
+    public void onEnd() {
+    }
+
+    boolean checkResult(int[] a, int m, int n) {
+        int[] aCopy = Arrays.copyOf(a, a.length);
+        Arrays.sort(aCopy);
+        for (int i = m; i <= n; i++) {
+            if (a[i] != aCopy[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

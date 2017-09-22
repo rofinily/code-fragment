@@ -1,6 +1,6 @@
 package anc.mem.model;
 
-import anc.global.Util;
+import anc.util.ExecUtil;
 
 public class MemModelTest {
     FinalFieldTest finalFieldTest;
@@ -16,7 +16,7 @@ public class MemModelTest {
     }
 
     void test() throws InterruptedException {
-        Util.execute(() -> {
+        ExecUtil.execute(() -> {
             try {
                 new FinalFieldTest();
             } catch (InterruptedException e) {
@@ -24,7 +24,7 @@ public class MemModelTest {
             }
         });
         Thread.sleep(1);
-        Util.execute(() -> {
+        ExecUtil.execute(() -> {
             System.out.print(finalFieldTest.i);
         });
     }
