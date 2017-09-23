@@ -2,7 +2,10 @@ package anc.util;
 
 import anc.constant.Const;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Scanner;
 
 public class DataSetUtil {
@@ -26,19 +29,18 @@ public class DataSetUtil {
         }
     }
 
-    public static InputStream getInputStream(File f) {
+    public static InputStream getInputStream(Path p) {
         try {
-            return new FileInputStream(f);
-        } catch (FileNotFoundException e) {
+            return Files.newInputStream(p);
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static InputStream getInputStream(String cmd) {
+    public static InputStream getInputStream(Command command) {
         try {
-            Process p = Runtime.getRuntime().exec(cmd);
-            return p.getInputStream();
+            return command.exec().getInputStream();
         } catch (IOException e) {
             e.printStackTrace();
             return null;

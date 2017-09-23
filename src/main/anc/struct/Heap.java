@@ -3,13 +3,13 @@ package anc.struct;
 import anc.util.DataSetUtil;
 import anc.util.Sort;
 
-import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class Heap {
     private int[] a = DataSetUtil.getIntArray(
-            DataSetUtil.getInputStream(new File("d:/dataset"))
+            DataSetUtil.getInputStream(Paths.get("d:/dataset"))
     );
     private Type type = Type.MAX_TOP;
 
