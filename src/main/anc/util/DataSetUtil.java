@@ -6,10 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class DataSetUtil {
     public static int[] getIntArray(InputStream is) {
+        Objects.requireNonNull(is);
+
         Scanner sc = null;
         int[] a = null;
         try {

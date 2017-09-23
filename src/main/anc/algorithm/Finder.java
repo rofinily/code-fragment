@@ -72,5 +72,3 @@ public class Finder {
         return findMth2Nth(0, k);
     }
 }
-
-

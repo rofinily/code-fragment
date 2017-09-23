@@ -1,4 +1,4 @@
-package anc.algorithm;
+package anc;
 
 import java.util.Collection;
 
