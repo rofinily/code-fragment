@@ -4,7 +4,7 @@ public class Sort {
     /**
      * @param a    array
      * @param type sort type
-     * @return whether array is sorted with sort type
+     * @return true if array is sorted with specific sort type, else false
      */
     public static boolean checkResult(int[] a, Type type) {
         if (a.length < 2) {

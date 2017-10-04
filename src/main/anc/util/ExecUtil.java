@@ -1,5 +1,6 @@
 package anc.util;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -11,7 +12,7 @@ public class ExecUtil {
         EXEC.execute(r);
     }
 
-    public static Future<?> submit(Runnable r) {
+    public static <T> Future<T> submit(Callable<T> r) {
         return EXEC.submit(r);
     }
 }

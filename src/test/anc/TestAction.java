@@ -4,8 +4,15 @@ import java.util.Collection;
 
 public interface TestAction {
 
-    @FunctionalInterface
-    interface Op {
+    class FailureException extends RuntimeException {
+        FailureException(String err) {
+            super(err);
+        }
+    }
+
+    interface IOperation {
+        String getDesc();
+
         boolean operate();
     }
 
@@ -17,29 +24,36 @@ public interface TestAction {
         System.out.println("execute nothing after an operation");
     }
 
-    default boolean perform(Collection<Op> ops) {
-        for (Op op : ops) {
-            boolean isSuccess = op.operate();
+    default void perform(Collection<IOperation> ops) {
+        boolean isSuccess;
+        for (IOperation op : ops) {
+            isSuccess = op.operate();
             if (!isSuccess) {
-                return false;
+                throw new FailureException(op.getDesc());
             }
         }
-        return true;
     }
 
-    default boolean perform(Op... ops) {
-        for (Op op : ops) {
-            boolean isSuccess = op.operate();
-            if (!isSuccess) {
-                return false;
-            }
-        }
-        return true;
+    default void perform(IOperation op0, IOperation... ops) throws FailureException {
+        perform(op0);
+        perform(ops);
     }
 
-    default boolean perform(Op op) {
+    default void perform(IOperation op) throws FailureException {
         boolean isSuccess = op.operate();
-        return isSuccess;
+        if (!isSuccess) {
+            throw new FailureException(op.getDesc());
+        }
+    }
+
+    default void perform(IOperation[] ops) throws FailureException {
+        boolean isSuccess;
+        for (IOperation op : ops) {
+            isSuccess = op.operate();
+            if (!isSuccess) {
+                throw new FailureException(op.getDesc());
+            }
+        }
     }
 
     void initDataSet();

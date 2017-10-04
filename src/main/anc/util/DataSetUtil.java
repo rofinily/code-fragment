@@ -14,7 +14,7 @@ public class DataSetUtil {
         Objects.requireNonNull(is);
 
         Scanner sc = null;
-        int[] a = null;
+        int[] a;
         try {
             sc = new Scanner(is);
             if (!sc.hasNextInt()) {

@@ -1,13 +1,19 @@
-package anc;
-
-import java.io.IOException;
-
-public class Main {
-    Main() {
-        throw new RuntimeException();
-    }
-
-    public static void main(String[] args) throws IOException {
-        Process p = Runtime.getRuntime().exec(new String[]{"java", "-version", " | d:/pipe.txt"});
-    }
-}
+//package anc;
+//
+//import anc.util.Util;
+//import jdk.internal.misc.Unsafe;
+//
+//import java.io.IOException;
+//
+//import static anc.util.Util.getUnsafe;
+//
+//public class Main {
+//    Main() {
+//        throw new RuntimeException();
+//    }
+//
+//    public static void main(String[] args) throws IOException {
+//        Unsafe unsafe = Util.getUnsafe();
+//        System.out.println(unsafe.addressSize());
+//    }
+//}
