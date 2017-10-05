@@ -1,13 +1,11 @@
 package anc.util.mail;
 
 import anc.util.mail.entity.Account;
+import anc.util.mail.entity.Mail;
 import anc.util.mail.entity.Server;
 import anc.util.mail.entity.User;
 
-import javax.mail.Folder;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Store;
+import javax.mail.*;
 import java.util.Properties;
 
 public class MailTest {
@@ -29,7 +27,8 @@ public class MailTest {
             store.connect(acc.getOwner().getAddr(), acc.getPassword());
             Folder folder = store.getFolder("INBOX");
             folder.open(Folder.READ_ONLY);
-            System.out.println(folder.getMessages().length);
+            Message msg = folder.getMessage(1);
+            System.out.println(Mail.fromMsg(msg));
             store.close();
         } catch (MessagingException e) {
             e.printStackTrace();

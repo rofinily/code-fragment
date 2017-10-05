@@ -3,11 +3,10 @@ package anc.util.mail.entity;
 import java.util.Properties;
 
 public class Server {
-    String host;
-    int port;
-    Server.Protocol protocol;
-    boolean useSsl;
-
+    private String host;
+    private int port;
+    private Server.Protocol protocol;
+    private boolean useSsl;
 
     public static Server create() {
         return new Server();
@@ -55,19 +54,21 @@ public class Server {
         SMTP("smtp") {
             @Override
             void setProperties(Properties props) {
-                props.setProperty("mail.transport.protocol", getProtocol());
+                props.setProperty("mail.transport.protocol", protocol);
             }
         },
         IMAP("imap") {
             @Override
             void setProperties(Properties props) {
-                props.setProperty("mail.store.protocol", getProtocol());
+                props.setProperty("mail.store.protocol", protocol);
+                props.setProperty("mail.imap.partialfetch", "false");
             }
         },
         POP3("pop3") {
             @Override
             void setProperties(Properties props) {
-                props.setProperty("mail.store.protocol", getProtocol());
+                props.setProperty("mail.store.protocol", protocol);
+                props.setProperty("mail.pop3.partialfetch", "false");
             }
         };
 
