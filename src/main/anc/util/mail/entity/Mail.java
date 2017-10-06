@@ -1,14 +1,14 @@
 package anc.util.mail.entity;
 
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Date;
 
 public class Mail {
-    private User[] from;
+    private User from;
     private User[] to;
     private User[] cc;
     private User[] bcc;
@@ -25,10 +25,10 @@ public class Mail {
     public static Mail fromMsg(Message msg) {
         try {
             return Mail.create()
-                    .from(fromAddr(msg.getFrom()))
-                    .to(fromAddr(msg.getRecipients(Message.RecipientType.TO)))
-                    .cc(fromAddr(msg.getRecipients(Message.RecipientType.CC)))
-                    .bcc(fromAddr(msg.getRecipients(Message.RecipientType.BCC)))
+                    .from(User.fromAddrs(msg.getFrom())[0])
+                    .to(User.fromAddrs(msg.getRecipients(Message.RecipientType.TO)))
+                    .cc(User.fromAddrs(msg.getRecipients(Message.RecipientType.CC)))
+                    .bcc(User.fromAddrs(msg.getRecipients(Message.RecipientType.BCC)))
                     .sentDate(msg.getSentDate())
                     .receivedDate(msg.getReceivedDate())
                     .subject(msg.getSubject())
@@ -40,6 +40,16 @@ public class Mail {
         }
     }
 
+    public Message toMessage(Session session) {
+        Message msg = new MimeMessage(session);
+        try {
+            msg.addFrom(new Address[]{User.toAddr(from)});
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static String getContent(Message msg) throws IOException, MessagingException {
         StringBuilder sb = new StringBuilder();
         resolveContent(msg, sb);
@@ -49,9 +59,17 @@ public class Mail {
     private static void resolveContent(Part part, StringBuilder sb) throws MessagingException, IOException {
         if (part.isMimeType("text/html")) {
             sb.append(part.getContent().toString());
-        } else if (part.isMimeType("message/rfc822")) {
+            return;
+        }
+        if (part.isMimeType("text/plain")) {
+            sb.append(part.getContent().toString());
+            return;
+        }
+        if (part.isMimeType("message/rfc822")) {
             resolveContent((Part) part.getContent(), sb);
-        } else if (part.isMimeType("multipart/*")) {
+            return;
+        }
+        if (part.isMimeType("multipart/*")) {
             Multipart multipart = (Multipart) part.getContent();
             for (int i = 0, count = multipart.getCount(); i < count; i++) {
                 resolveContent(multipart.getBodyPart(i), sb);
@@ -59,27 +77,7 @@ public class Mail {
         }
     }
 
-    public static User fromAddr(Address addr) {
-        if (addr instanceof InternetAddress) {
-            InternetAddress inetAddr = ((InternetAddress) addr);
-            return User.of(inetAddr.getPersonal(), inetAddr.getAddress());
-        }
-        return null;
-    }
-
-    public static User[] fromAddr(Address[] addrs) {
-        if (addrs == null) {
-            return new User[0];
-        }
-        int len = addrs.length;
-        User[] users = new User[len];
-        for (int i = 0; i < len; i++) {
-            users[i] = fromAddr(addrs[i]);
-        }
-        return users;
-    }
-
-    public Mail from(User[] from) {
+    public Mail from(User from) {
         this.from = from;
         return this;
     }
@@ -94,7 +92,7 @@ public class Mail {
         return this;
     }
 
-    private Mail bcc(User[] bcc) {
+    public Mail bcc(User[] bcc) {
         this.bcc = bcc;
         return this;
     }
@@ -127,7 +125,7 @@ public class Mail {
     @Override
     public String toString() {
         return "Mail{" +
-                "from=" + Arrays.toString(from) +
+                "from=" + from +
                 ", to=" + Arrays.toString(to) +
                 ", cc=" + Arrays.toString(cc) +
                 ", bcc=" + Arrays.toString(bcc) +
@@ -138,4 +136,5 @@ public class Mail {
                 ", seen=" + seen +
                 '}';
     }
+
 }
