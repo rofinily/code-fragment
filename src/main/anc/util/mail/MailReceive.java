@@ -17,7 +17,7 @@ public class MailReceive {
                 .port(993)
                 .protocol(Server.Protocol.IMAP)
                 .useSsl(true);
-        server.setProperties(props);
+        server.setProperty(props);
 
         Account acc = Account.of(User.of("shi", "anchore@foxmail.com"), "folovbwogjlnbdib");
 
@@ -27,7 +27,7 @@ public class MailReceive {
             store.connect(acc.getOwner().getAddr(), acc.getPassword());
             Folder folder = store.getFolder("INBOX");
             folder.open(Folder.READ_ONLY);
-            Message msg = folder.getMessage(1);
+            Message msg = folder.getMessage(folder.getMessageCount() - 2);
             System.out.println(Mail.fromMsg(msg));
             store.close();
         } catch (MessagingException e) {

@@ -3,7 +3,7 @@ package anc.util.mail.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Content<T> {
+public class MailContent<T> {
     private Map<String, T> type2Content = new HashMap<>();
 
     public T put(String type, T content) {

@@ -32,9 +32,9 @@ public class Server {
         return this;
     }
 
-    public void setProperties(Properties props) {
+    public void setProperty(Properties props) {
         String prot = protocol.getProtocol();
-        protocol.setProperties(props);
+        protocol.setProperty(props);
         props.setProperty("mail." + prot + ".ssl.enable", String.valueOf(useSsl));
         props.setProperty("mail." + prot + ".host", host);
         props.setProperty("mail." + prot + ".port", String.valueOf(port));
@@ -53,20 +53,20 @@ public class Server {
     public enum Protocol {
         SMTP("smtp") {
             @Override
-            void setProperties(Properties props) {
+            void setProperty(Properties props) {
                 props.setProperty("mail.transport.protocol", protocol);
             }
         },
         IMAP("imap") {
             @Override
-            void setProperties(Properties props) {
+            void setProperty(Properties props) {
                 props.setProperty("mail.store.protocol", protocol);
                 props.setProperty("mail.imap.partialfetch", "false");
             }
         },
         POP3("pop3") {
             @Override
-            void setProperties(Properties props) {
+            void setProperty(Properties props) {
                 props.setProperty("mail.store.protocol", protocol);
                 props.setProperty("mail.pop3.partialfetch", "false");
             }
@@ -78,7 +78,7 @@ public class Server {
 
         String protocol;
 
-        abstract void setProperties(Properties props);
+        abstract void setProperty(Properties props);
 
         public String getProtocol() {
             return protocol;

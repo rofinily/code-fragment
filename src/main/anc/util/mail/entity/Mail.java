@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class Mail {
-    private User from;
+
+    private User[] from;
     private User[] to;
     private User[] cc;
     private User[] bcc;
@@ -24,7 +25,7 @@ public class Mail {
 
     public static Mail fromMsg(Message msg) {
         try {
-            return Mail.create()
+            return create()
                     .from(User.fromAddrs(msg.getFrom())[0])
                     .to(User.fromAddrs(msg.getRecipients(Message.RecipientType.TO)))
                     .cc(User.fromAddrs(msg.getRecipients(Message.RecipientType.CC)))
@@ -43,11 +44,18 @@ public class Mail {
     public Message toMessage(Session session) {
         Message msg = new MimeMessage(session);
         try {
-            msg.addFrom(new Address[]{User.toAddr(from)});
+            msg.addFrom(User.toAddrs(from));
+            msg.setRecipients(Message.RecipientType.TO, User.toAddrs(to));
+            msg.setRecipients(Message.RecipientType.CC, User.toAddrs(cc));
+            msg.setRecipients(Message.RecipientType.BCC, User.toAddrs(bcc));
+            msg.setSubject(subject);
+            msg.setSentDate(sentDate);
+            msg.setContent(content, "text/html; charset=UTF-8");
+            return msg;
         } catch (MessagingException | UnsupportedEncodingException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
     public static String getContent(Message msg) throws IOException, MessagingException {
@@ -77,22 +85,22 @@ public class Mail {
         }
     }
 
-    public Mail from(User from) {
+    public Mail from(User... from) {
         this.from = from;
         return this;
     }
 
-    public Mail to(User[] to) {
+    public Mail to(User... to) {
         this.to = to;
         return this;
     }
 
-    public Mail cc(User[] cc) {
+    public Mail cc(User... cc) {
         this.cc = cc;
         return this;
     }
 
-    public Mail bcc(User[] bcc) {
+    public Mail bcc(User... bcc) {
         this.bcc = bcc;
         return this;
     }
@@ -125,7 +133,7 @@ public class Mail {
     @Override
     public String toString() {
         return "Mail{" +
-                "from=" + from +
+                "from=" + Arrays.toString(from) +
                 ", to=" + Arrays.toString(to) +
                 ", cc=" + Arrays.toString(cc) +
                 ", bcc=" + Arrays.toString(bcc) +

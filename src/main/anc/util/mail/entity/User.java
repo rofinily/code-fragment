@@ -5,6 +5,8 @@ import javax.mail.internet.InternetAddress;
 import java.io.UnsupportedEncodingException;
 
 public class User {
+    public static final User[] EMPTY_USERS = new User[0];
+
     private final String name;
     private final String addr;
 
@@ -26,7 +28,7 @@ public class User {
     }
 
     public static Address toAddr(User user) throws UnsupportedEncodingException {
-        return new InternetAddress(user.name, user.addr);
+        return new InternetAddress(user.addr, user.name);
     }
 
     public static User[] fromAddrs(Address[] addrs) {

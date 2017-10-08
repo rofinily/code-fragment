@@ -5,9 +5,11 @@ import anc.util.mail.entity.Mail;
 import anc.util.mail.entity.Server;
 import anc.util.mail.entity.User;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import java.util.Date;
 import java.util.Properties;
 
 public class MailSend {
@@ -18,42 +20,38 @@ public class MailSend {
                 .port(465)
                 .protocol(Server.Protocol.SMTP)
                 .useSsl(true);
-        server.setProperties(props);
+        server.setProperty(props);
 
-        Account acc = Account.of(User.of("shi", "anchore@foxmail.com"), "folovbwogjlnbdib");
+        Account acc = Account.of(User.of("yang", "anchore@foxmail.com"), "folovbwogjlnbdib");
 
-        Session session = Session.getDefaultInstance(props);
+        Session session = Session.getDefaultInstance(props/*, Auth.create().account(acc)*/);
+        Transport transport = null;
         try {
-            Transport transport = session.getTransport();
+            transport = session.getTransport();
             transport.connect(acc.getOwner().getAddr(), acc.getPassword());
+
             Mail mail = Mail.create()
-                    .from(User.of("shi", "anc@foxmail.com"))
-                    .to(new User[]{User.of("qq", "1009252731@qq.com")})
-                    .cc(null)
-                    .bcc(null)
-                    .subject("cshi")
-                    .content("asdasd");
-            Message msg = mail.toMessage();
-            Message msg = new MimeMessage(session);
-            //发件地址
-            Address fromAddress = new InternetAddress(account);
-            msg.setFrom(fromAddress);
-            //收件地址
-            Address toAddress = new InternetAddress(receiver);
-            msg.setRecipient(MimeMessage.RecipientType.TO, toAddress);
-            //主题
-            msg.setSubject(subject);
-            //正文
-            msg.setContent(content, "text/html; charset=UTF-8");
+                    .from(acc.getOwner())
+                    .to(User.of("fangyu", "anchore@foxmail.com"))
+                    .cc(User.EMPTY_USERS)
+                    .bcc(User.EMPTY_USERS)
+                    .subject("ceshi")
+                    .sentDate(new Date())
+                    .content("xinyoujian");
+            Message msg = mail.toMessage(session);
             msg.saveChanges();
-            Transport transport = session.getTransport();
-            //连接smtp.qq.com邮件服务器，端口465
-            transport.connect(account, password);
-            //发送
+
             transport.sendMessage(msg, msg.getAllRecipients());
-            transport.close();
         } catch (MessagingException e) {
             e.printStackTrace();
+        } finally {
+            if (transport != null) {
+                try {
+                    transport.close();
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
