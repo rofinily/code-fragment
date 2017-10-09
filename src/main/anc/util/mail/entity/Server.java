@@ -33,11 +33,11 @@ public class Server {
     }
 
     public void setProperty(Properties props) {
-        String prot = protocol.getProtocol();
         protocol.setProperty(props);
-        props.setProperty("mail." + prot + ".ssl.enable", String.valueOf(useSsl));
-        props.setProperty("mail." + prot + ".host", host);
-        props.setProperty("mail." + prot + ".port", String.valueOf(port));
+        String name = protocol.getName();
+        props.setProperty("mail." + name + ".host", host);
+        props.setProperty("mail." + name + ".port", String.valueOf(port));
+        props.setProperty("mail." + name + ".ssl.enable", String.valueOf(useSsl));
     }
 
     @Override
@@ -54,34 +54,34 @@ public class Server {
         SMTP("smtp") {
             @Override
             void setProperty(Properties props) {
-                props.setProperty("mail.transport.protocol", protocol);
+                props.setProperty("mail.transport.protocol", name);
             }
         },
         IMAP("imap") {
             @Override
             void setProperty(Properties props) {
-                props.setProperty("mail.store.protocol", protocol);
+                props.setProperty("mail.store.protocol", name);
                 props.setProperty("mail.imap.partialfetch", "false");
             }
         },
         POP3("pop3") {
             @Override
             void setProperty(Properties props) {
-                props.setProperty("mail.store.protocol", protocol);
+                props.setProperty("mail.store.protocol", name);
                 props.setProperty("mail.pop3.partialfetch", "false");
             }
         };
 
-        Protocol(String protocol) {
-            this.protocol = protocol;
+        Protocol(String name) {
+            this.name = name;
         }
 
-        String protocol;
+        String name;
 
         abstract void setProperty(Properties props);
 
-        public String getProtocol() {
-            return protocol;
+        public String getName() {
+            return name;
         }
     }
 }

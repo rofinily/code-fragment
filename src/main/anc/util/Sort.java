@@ -51,7 +51,7 @@ public class Sort {
         a[p1] = a[p1] ^ a[p2];
     }
 
-    public enum Type implements ICompare {
+    public enum Type {
         ASC() {
             @Override
             public int compare(int a, int b) {
@@ -64,6 +64,8 @@ public class Sort {
                 return a - b;
             }
         };
+
+        abstract int compare(int a, int b);
 
         public Type reverse() {
             return this == ASC ? DESC : this;

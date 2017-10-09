@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 
 public class User {
     public static final User[] EMPTY_USERS = new User[0];
+    public static final Address[] EMPTY_ADDRESSES = new Address[0];
 
     private final String name;
     private final String addr;
@@ -33,7 +34,7 @@ public class User {
 
     public static User[] fromAddrs(Address[] addrs) {
         if (addrs == null) {
-            return new User[0];
+            return EMPTY_USERS;
         }
         int len = addrs.length;
         User[] users = new User[len];
@@ -45,7 +46,7 @@ public class User {
 
     public static Address[] toAddrs(User[] users) throws UnsupportedEncodingException {
         if (users == null) {
-            return new Address[0];
+            return EMPTY_ADDRESSES;
         }
         int len = users.length;
         Address[] addrs = new Address[len];
