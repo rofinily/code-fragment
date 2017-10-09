@@ -24,9 +24,7 @@ public class MemModelTest {
             }
         });
         Thread.sleep(1);
-        ExecUtil.execute(() -> {
-            System.out.print(finalFieldTest.i);
-        });
+        ExecUtil.execute(() -> System.out.print(finalFieldTest.i));
     }
 
     public static void main(String[] args) throws InterruptedException {

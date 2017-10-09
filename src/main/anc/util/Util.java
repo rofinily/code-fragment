@@ -32,6 +32,7 @@ public class Util {
         }
     }
 
+    @SafeVarargs
     public static <T> void requireNonNull(T t0, T... ts) {
         requireNonNull(t0);
         requireNonNull(ts);

@@ -9,6 +9,5 @@ import java.util.Arrays;
 public class Main {
     public static void main(String[] args) throws IOException {
         System.out.println(Arrays.toString(DataSetUtil.getIntArray(DataSetUtil.getInputStream(Command.create().cmdArray("echo", "1")))));
-        ;
     }
 }
