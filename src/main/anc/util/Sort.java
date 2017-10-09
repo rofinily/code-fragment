@@ -65,7 +65,7 @@ public class Sort {
             }
         };
 
-        abstract int compare(int a, int b);
+        public abstract int compare(int a, int b);
 
         public Type reverse() {
             return this == ASC ? DESC : this;

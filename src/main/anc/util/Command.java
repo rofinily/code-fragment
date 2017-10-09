@@ -1,36 +1,34 @@
 package anc.util;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class Command {
-    private File dir;
+    private Path path;
     private String[] cmdArray;
     private String[] env;
 
-    private Command(File dir, String cmd, String[] env) {
-        this(dir, new String[]{cmd}, env);
+    public static Command create() {
+        return new Command();
     }
 
-    private Command(File dir, String[] cmdArray, String[] env) {
-        this.dir = dir;
+    public Command path(Path path) {
+        this.path = path;
+        return this;
+    }
+
+    public Command cmdArray(String... cmdArray) {
         this.cmdArray = cmdArray;
+        return this;
+    }
+
+    public Command env(String... env) {
         this.env = env;
-    }
-
-    public static Command of(File dir, String cmd, String[] env) {
-        return new Command(dir, cmd, env);
-    }
-
-    public static Command of(File dir, String[] cmdArray, String[] env) {
-        return new Command(dir, cmdArray, env);
-    }
-
-    public static Command of(String cmd) {
-        return of(null, cmd, null);
+        return this;
     }
 
     public Process exec() throws IOException {
-        return Runtime.getRuntime().exec(cmdArray, env, dir);
+        return Runtime.getRuntime().exec(cmdArray, env, path != null ? path.toFile() : null);
     }
+
 }
