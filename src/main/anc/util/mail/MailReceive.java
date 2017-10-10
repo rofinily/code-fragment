@@ -27,7 +27,7 @@ public class MailReceive {
             store.connect(acc.getOwner().getAddr(), acc.getPassword());
             Folder folder = store.getFolder("INBOX");
             folder.open(Folder.READ_ONLY);
-            Message msg = folder.getMessage(folder.getMessageCount() - 2);
+            Message msg = folder.getMessage(folder.getMessageCount() - 3);
             System.out.println(Mail.fromMsg(msg));
             store.close();
         } catch (MessagingException e) {

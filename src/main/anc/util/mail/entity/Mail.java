@@ -59,28 +59,28 @@ public class Mail {
     }
 
     public static String getContent(Message msg) throws IOException, MessagingException {
-        StringBuilder sb = new StringBuilder();
-        resolveContent(msg, sb);
-        return sb.toString();
+        MailContent mc = new MailContent();
+        resolveContent(msg, mc);
+        return mc.getDefault();
     }
 
-    private static void resolveContent(Part part, StringBuilder sb) throws MessagingException, IOException {
+    private static void resolveContent(Part part, MailContent mc) throws MessagingException, IOException {
         if (part.isMimeType("text/html")) {
-            sb.append(part.getContent().toString());
+            mc.put("text/html", part.getContent().toString());
             return;
         }
         if (part.isMimeType("text/plain")) {
-            sb.append(part.getContent().toString());
+            mc.put("text/plain", part.getContent().toString());
             return;
         }
         if (part.isMimeType("message/rfc822")) {
-            resolveContent((Part) part.getContent(), sb);
+            resolveContent((Part) part.getContent(), mc);
             return;
         }
         if (part.isMimeType("multipart/*")) {
             Multipart multipart = (Multipart) part.getContent();
             for (int i = 0, count = multipart.getCount(); i < count; i++) {
-                resolveContent(multipart.getBodyPart(i), sb);
+                resolveContent(multipart.getBodyPart(i), mc);
             }
         }
     }

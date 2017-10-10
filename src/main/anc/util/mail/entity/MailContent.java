@@ -1,21 +1,29 @@
 package anc.util.mail.entity;
 
+import anc.util.StrUtil;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class MailContent<T> {
-    private Map<String, T> type2Content = new HashMap<>();
+public class MailContent {
 
-    public T put(String type, T content) {
+    private Map<String, String> type2Content = new HashMap<>();
+    private static final String[] TYPE_PRIORITY = new String[]{"text/html", "text/plain"};
+
+    public String put(String type, String content) {
         return type2Content.put(type, content);
     }
 
-    public T get(String type) {
+    public String get(String type) {
         return type2Content.get(type);
     }
 
-    public T getOrDefault(String type, T defaultVal) {
-        T val = type2Content.get(type);
-        return val != null ? val : defaultVal;
+    public String getDefault() {
+        for (String type : TYPE_PRIORITY) {
+            if (type2Content.containsKey(type)) {
+                return type2Content.get(type);
+            }
+        }
+        return StrUtil.EMPTY;
     }
 }
