@@ -5,9 +5,16 @@ import anc.util.mail.entity.Mail;
 import anc.util.mail.entity.Server;
 import anc.util.mail.entity.User;
 
-import javax.mail.*;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Store;
 import java.util.Properties;
 
+/**
+ * @author anchore
+ */
 public class MailReceive {
     public static void main(String[] args) {
 
