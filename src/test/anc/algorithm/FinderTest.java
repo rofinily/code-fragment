@@ -1,7 +1,7 @@
 package anc.algorithm;
 
-import anc.TestAction;
 import anc.util.DataSetUtil;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -10,15 +10,20 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertTrue;
 
-class FinderTest implements TestAction {
+public class FinderTest {
     private int[] a;
     private Finder f;
 
+    @Before
+    public void initDataSet() {
+        a = DataSetUtil.getIntArray(
+                DataSetUtil.getInputStream(Paths.get("d:/dataset"))
+        );
+        f = new Finder(a);
+    }
+
     @Test
     public void testFindMth2Nth() throws Exception {
-        beforeOperate();
-
-        f = new Finder(a);
         int m = a.length / 10,
                 n = a.length / 2;
         f.findMth2Nth(m, n);
@@ -28,9 +33,6 @@ class FinderTest implements TestAction {
 
     @Test
     public void testFindKth() throws FileNotFoundException {
-        beforeOperate();
-
-        f = new Finder(a);
         int k = a.length / 2;
         f.findMth2Nth(k, k);
 
@@ -48,10 +50,4 @@ class FinderTest implements TestAction {
         return true;
     }
 
-    @Override
-    public void initDataSet() {
-        a = DataSetUtil.getIntArray(
-                DataSetUtil.getInputStream(Paths.get("d:/dataset"))
-        );
-    }
 }

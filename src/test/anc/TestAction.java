@@ -2,6 +2,7 @@ package anc;
 
 import java.util.Collection;
 
+@Deprecated
 public interface TestAction {
 
     class FailureException extends RuntimeException {
