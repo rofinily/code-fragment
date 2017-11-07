@@ -32,7 +32,7 @@ public class BinarySearcherTest {
     public void testMultiBinarySearch() {
         int[] b = r.ints(10, 0, 1000).distinct().toArray();
 
-        Set<Map.Entry<Integer, Integer>> set = BinarySearcher.multiBinarySearch(a, 0, a.length - 1, b);
+        Set<Map.Entry<Integer, Integer>> set = BinarySearcher.multiBinarySearch(a, b);
         for (Map.Entry<Integer, Integer> entry : set) {
             if (a[entry.getValue()] != entry.getKey()) {
                 Assert.fail();
