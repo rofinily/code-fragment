@@ -4,6 +4,9 @@ import anc.util.Sort;
 
 import java.util.Arrays;
 
+/**
+ * @author anchore
+ */
 public class Permutation {
     private int[] a;
 
