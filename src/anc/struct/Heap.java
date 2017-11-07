@@ -14,8 +14,8 @@ public class Heap {
     private Type type = Type.MAX_TOP;
 
     private enum Type {
-        MAX_TOP(Sort.Type.DESC),
-        MIN_TOP(Sort.Type.ASC);
+        MAX_TOP(Sort.Type.ASC),
+        MIN_TOP(Sort.Type.DESC);
 
         Sort.Type sortType;
 
@@ -39,7 +39,7 @@ public class Heap {
         if (!isLeaf(left(i), len)) {
             adjust(left(i), len);
         }
-        if (compare(a[i], a[left(i)]) < 0) {
+        if (compare(a[i], a[left(i)]) > 0) {
             swap(i, left(i));
             adjust(left(i), len);
         }
@@ -48,7 +48,7 @@ public class Heap {
             if (!isLeaf(right(i), len)) {
                 adjust(right(i), len);
             }
-            if (compare(a[i], a[right(i)]) < 0) {
+            if (compare(a[i], a[right(i)]) > 0) {
                 swap(i, right(i));
                 adjust(right(i), len);
             }
@@ -65,11 +65,11 @@ public class Heap {
     private boolean check() {
         for (int i = 0, len = a.length; i < len / 2; i++) {
             if (hasLeft(i, len)) {
-                if (compare(a[i], a[left(i)]) < 0) {
+                if (compare(a[i], a[left(i)]) > 0) {
                     return false;
                 }
                 if (hasRight(i, len)) {
-                    if (compare(a[i], a[right(i)]) < 0) {
+                    if (compare(a[i], a[right(i)]) > 0) {
                         return false;
                     }
                 }

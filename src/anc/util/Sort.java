@@ -11,7 +11,7 @@ public class Sort {
             return true;
         }
         for (int i = 0, len = a.length; i < len - 1; i++) {
-            if (type.compare(a[i], a[i + 1]) < 0) {
+            if (type.compare(a[i], a[i + 1]) > 0) {
                 return false;
             }
         }
@@ -55,13 +55,13 @@ public class Sort {
         ASC() {
             @Override
             public int compare(int a, int b) {
-                return b - a;
+                return a - b;
             }
         },
         DESC() {
             @Override
             public int compare(int a, int b) {
-                return a - b;
+                return ASC.compare(b, a);
             }
         };
 

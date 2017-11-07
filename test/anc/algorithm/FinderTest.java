@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertTrue;
@@ -16,9 +15,7 @@ public class FinderTest {
 
     @Before
     public void initDataSet() {
-        a = DataSetUtil.getIntArray(
-                DataSetUtil.getInputStream(Paths.get("d:/dataset"))
-        );
+        a = DataSetUtil.getIntArray(1000000);
         f = new Finder(a);
     }
 

@@ -1,5 +1,7 @@
 package anc.algorithm;
 
+import anc.util.Sort;
+
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Random;
@@ -12,15 +14,15 @@ import java.util.TreeMap;
  */
 public class BinarySearcher {
 
-    public static Set<Map.Entry<Integer, Integer>> multiBinarySearch(int[] a, int[] b) {
-        TreeMap<Integer, Integer> pivots = new TreeMap<>();
+    public static Set<Map.Entry<Integer, Integer>> multiBinarySearch(int[] a, int[] b, Sort.Type sortType) {
+        TreeMap<Integer, Integer> pivots = new TreeMap<>(sortType::compare);
 
         for (int v : b) {
             Map.Entry<Integer, Integer> highEntry = pivots.higherEntry(v),
                     lowEntry = pivots.lowerEntry(v);
             int low = lowEntry == null ? 0 : lowEntry.getValue();
             int high = highEntry == null ? a.length - 1 : highEntry.getValue();
-            int i = binarySearch(a, low, high, v);
+            int i = binarySearch(a, low, high, v, sortType);
             if (i != -1) {
                 pivots.put(v, i);
             }
@@ -28,25 +30,25 @@ public class BinarySearcher {
         return pivots.entrySet();
     }
 
-    public static int binarySearch(int[] a, int l, int r, int v) {
+    public static int binarySearch(int[] a, int l, int r, int v, Sort.Type sortType) {
         if (l > r) {
             return -1;
         }
         if (l == r) {
-            if (a[l] == v) {
+            if (sortType.compare(a[l], v) == 0) {
                 return l;
             }
             return -1;
         }
         int mid = (l + r) >> 1;
-        if (a[mid] == v) {
+        if (sortType.compare(a[mid], v) == 0) {
             return mid;
         }
-        if (v < a[mid]) {
-            return binarySearch(a, l, mid - 1, v);
+        if (sortType.compare(v, a[mid]) < 0) {
+            return binarySearch(a, l, mid - 1, v, sortType);
         }
-        if (v > a[mid]) {
-            return binarySearch(a, mid + 1, r, v);
+        if (sortType.compare(v, a[mid]) > 0) {
+            return binarySearch(a, mid + 1, r, v, sortType);
         }
         return -1;
     }
@@ -107,8 +109,10 @@ public class BinarySearcher {
         int[] b = r.ints(10, 0, size).distinct().toArray();
         Integer[] bi = box(b);
 
+        Sort.Type sortType = Sort.Type.ASC;
+
         long start = System.nanoTime();
-        multiBinarySearch(a, b);
+        multiBinarySearch(a, b, sortType);
         long cost = System.nanoTime() - start;
 
         start = System.nanoTime();

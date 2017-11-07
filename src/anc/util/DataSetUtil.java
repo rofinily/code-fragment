@@ -7,9 +7,23 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * @author anchore
+ */
 public class DataSetUtil {
+    private static final Random R = new Random();
+
+    public static int[] getIntArray(int size) {
+        return getIntArray(R, size, 0, size - 1);
+    }
+
+    public static int[] getIntArray(Random r, int size, int from, int to) {
+        return r.ints(size, from, to).toArray();
+    }
+
     public static int[] getIntArray(InputStream is) {
         Objects.requireNonNull(is);
 

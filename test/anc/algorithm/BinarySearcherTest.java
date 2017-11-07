@@ -1,5 +1,6 @@
 package anc.algorithm;
 
+import anc.util.Sort;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,14 +26,14 @@ public class BinarySearcherTest {
     @Test
     public void testBinarySearch() {
         int i = r.nextInt(1000);
-        Assert.assertEquals(i, BinarySearcher.binarySearch(a, 0, a.length - 1, a[i]));
+        Assert.assertEquals(i, BinarySearcher.binarySearch(a, 0, a.length - 1, a[i], Sort.Type.ASC));
     }
 
     @Test
     public void testMultiBinarySearch() {
         int[] b = r.ints(10, 0, 1000).distinct().toArray();
 
-        Set<Map.Entry<Integer, Integer>> set = BinarySearcher.multiBinarySearch(a, b);
+        Set<Map.Entry<Integer, Integer>> set = BinarySearcher.multiBinarySearch(a, b, Sort.Type.ASC);
         for (Map.Entry<Integer, Integer> entry : set) {
             if (a[entry.getValue()] != entry.getKey()) {
                 Assert.fail();

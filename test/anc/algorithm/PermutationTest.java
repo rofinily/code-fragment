@@ -4,16 +4,12 @@ import anc.util.DataSetUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.file.Paths;
-
 public class PermutationTest {
     private int[] a;
 
     @Before
     public void initDataSet() {
-        a = DataSetUtil.getIntArray(
-                DataSetUtil.getInputStream(Paths.get("d:/dataset"))
-        );
+        a = DataSetUtil.getIntArray(10);
     }
 
     @Test

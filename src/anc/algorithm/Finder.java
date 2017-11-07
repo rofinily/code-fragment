@@ -33,11 +33,11 @@ public class Finder {
                 tr = r,
                 p = a[r];
         while (l < r) {
-            while (l < r && sortType.compare(a[l], p) > 0) {
+            while (l < r && sortType.compare(a[l], p) < 0) {
                 l++;
             }
             a[r] = a[l];
-            while (l < r && sortType.compare(a[r], p) < 0) {
+            while (l < r && sortType.compare(a[r], p) > 0) {
                 r--;
             }
             a[l] = a[r];
