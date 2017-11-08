@@ -14,7 +14,7 @@ public class FinderTest {
     private Finder f;
 
     @Before
-    public void initDataSet() {
+    public void before() {
         a = DataSetUtil.getIntArray(1000000);
         f = new Finder(a);
     }

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -17,7 +16,7 @@ public class DataSetUtil {
     private static final Random R = new Random();
 
     public static int[] getIntArray(int size) {
-        return getIntArray(R, size, 0, size - 1);
+        return getIntArray(R, size, 0, size);
     }
 
     public static int[] getIntArray(Random r, int size, int from, int to) {
@@ -25,7 +24,7 @@ public class DataSetUtil {
     }
 
     public static int[] getIntArray(InputStream is) {
-        Objects.requireNonNull(is);
+        Util.requireNonNull(is);
 
         Scanner sc = null;
         int[] a;
@@ -62,10 +61,6 @@ public class DataSetUtil {
             e.printStackTrace();
             return null;
         }
-    }
-
-    public static void main(String[] args) {
-        System.out.print("3 1 2 3");
     }
 
 }

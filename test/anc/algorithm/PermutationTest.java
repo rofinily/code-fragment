@@ -8,7 +8,7 @@ public class PermutationTest {
     private int[] a;
 
     @Before
-    public void initDataSet() {
+    public void before() {
         a = DataSetUtil.getIntArray(10);
     }
 
