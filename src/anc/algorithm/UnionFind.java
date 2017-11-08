@@ -7,6 +7,7 @@ package anc.algorithm;
 public class UnionFind {
     class Node {
         Node parent;
+        int rank;
     }
 
     static Node findRoot(Node n) {
