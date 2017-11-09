@@ -1,5 +1,7 @@
 package anc.util;
 
+import java.util.Comparator;
+
 /**
  * @author anchore
  */
@@ -55,20 +57,98 @@ public class Sort {
     }
 
     public enum Type {
+        /**
+         * ascend order
+         */
         ASC() {
+            @Override
+            public int compare(byte a, byte b) {
+                return a - b;
+            }
+
+            @Override
+            public int compare(short a, short b) {
+                return a - b;
+            }
+
             @Override
             public int compare(int a, int b) {
                 return a - b;
             }
+
+            @Override
+            public int compare(float a, float b) {
+                return Float.compare(a, b);
+            }
+
+            @Override
+            public int compare(long a, long b) {
+                return Long.compare(a, b);
+            }
+
+            @Override
+            public int compare(double a, double b) {
+                return Double.compare(a, b);
+            }
+
+            @Override
+            public <T> int compare(T a, T b, Comparator<T> c) {
+                return c.compare(a, b);
+            }
         },
+        /**
+         * descend order
+         */
         DESC() {
+            @Override
+            public int compare(byte a, byte b) {
+                return ASC.compare(b, a);
+            }
+
+            @Override
+            public int compare(short a, short b) {
+                return ASC.compare(b, a);
+            }
+
             @Override
             public int compare(int a, int b) {
                 return ASC.compare(b, a);
             }
+
+            @Override
+            public int compare(float a, float b) {
+                return ASC.compare(b, a);
+            }
+
+            @Override
+            public int compare(long a, long b) {
+                return ASC.compare(b, a);
+            }
+
+            @Override
+            public int compare(double a, double b) {
+                return ASC.compare(b, a);
+            }
+
+            @Override
+            public <T> int compare(T a, T b, Comparator<T> c) {
+                return ASC.compare(b, a, c);
+            }
         };
 
+        public abstract int compare(byte a, byte b);
+
+        public abstract int compare(short a, short b);
+
         public abstract int compare(int a, int b);
+
+        public abstract int compare(float a, float b);
+
+        public abstract int compare(long a, long b);
+
+        public abstract int compare(double a, double b);
+
+        public abstract <T> int compare(T a, T b, Comparator<T> c);
 
         public Type reverse() {
             return this == ASC ? DESC : this;
