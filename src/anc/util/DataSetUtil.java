@@ -16,7 +16,7 @@ public class DataSetUtil {
     private static final Random R = new Random();
 
     public static int[] getIntArray(int size) {
-        return getIntArray(R, size, 0, size);
+        return getIntArray(R, size, 0, size << 1);
     }
 
     public static int[] getIntArray(Random r, int size, int from, int to) {

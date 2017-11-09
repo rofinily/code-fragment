@@ -2,14 +2,16 @@ package anc.algorithm;
 
 import anc.util.DataSetUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class PermutationTest {
     private int[] a;
 
     @Before
     public void before() {
-        a = DataSetUtil.getIntArray(10);
+        a = DataSetUtil.getIntArray(5);
     }
 
     @Test

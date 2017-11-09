@@ -2,6 +2,9 @@ package anc.mem.model;
 
 import anc.util.ExecUtil;
 
+/**
+ * @author anchore
+ */
 public class MemModelTest {
     FinalFieldTest finalFieldTest;
 
