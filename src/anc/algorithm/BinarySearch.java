@@ -3,6 +3,7 @@ package anc.algorithm;
 import anc.util.Sort;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -60,9 +61,9 @@ public class BinarySearch {
     }
 
     public static <K> Set<Map.Entry<K, Integer>> multiSearch(K[] a, K[] b, Comparator<K> c) {
-        TreeMap<K, Integer> pivots = new TreeMap<>(c),
-                result = new TreeMap<>(c);
+        Map<K, Integer> result = new HashMap<>();
 
+        TreeMap<K, Integer> pivots = new TreeMap<>(c);
         pivots.put(a[0], 0);
         pivots.put(a[a.length - 1], a.length - 1);
 
@@ -80,9 +81,9 @@ public class BinarySearch {
     }
 
     public static Set<Map.Entry<Integer, Integer>> multiSearch(int[] a, int[] b, Sort.Type sortType) {
-        TreeMap<Integer, Integer> pivots = new TreeMap<>(sortType::compare),
-                result = new TreeMap<>(sortType::compare);
+        Map<Integer, Integer> result = new HashMap<>();
 
+        TreeMap<Integer, Integer> pivots = new TreeMap<>(sortType::compare);
         pivots.put(a[0], 0);
         pivots.put(a[a.length - 1], a.length - 1);
 
@@ -96,7 +97,7 @@ public class BinarySearch {
                 result.put(v, i);
             }
         }
-        System.out.println(pivots.size());
+
         return result.entrySet();
     }
 
