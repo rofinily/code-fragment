@@ -92,6 +92,11 @@ public class Sort {
             }
 
             @Override
+            public <T extends Comparable<T>> int compare(T a, T b) {
+                return a.compareTo(b);
+            }
+
+            @Override
             public <T> int compare(T a, T b, Comparator<T> c) {
                 return c.compare(a, b);
             }
@@ -131,6 +136,11 @@ public class Sort {
             }
 
             @Override
+            public <T extends Comparable<T>> int compare(T a, T b) {
+                return ASC.compare(b, a);
+            }
+
+            @Override
             public <T> int compare(T a, T b, Comparator<T> c) {
                 return ASC.compare(b, a, c);
             }
@@ -147,6 +157,8 @@ public class Sort {
         public abstract int compare(long a, long b);
 
         public abstract int compare(double a, double b);
+
+        public abstract <T extends Comparable<T>> int compare(T a, T b);
 
         public abstract <T> int compare(T a, T b, Comparator<T> c);
 
