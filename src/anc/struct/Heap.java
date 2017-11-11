@@ -4,13 +4,10 @@ import anc.util.DataSetUtil;
 import anc.util.Sort;
 
 import java.io.FileNotFoundException;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class Heap {
-    private int[] a = DataSetUtil.getIntArray(
-            DataSetUtil.getInputStream(Paths.get("d:/dataset"))
-    );
+    private int[] a = DataSetUtil.getIntArray(100);
     private Type type = Type.MAX_TOP;
 
     private enum Type {
