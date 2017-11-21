@@ -32,11 +32,8 @@ public class AvlTree<T> {
         System.out.println(avl);
     }
 
-    static class Node<T> {
+    static class Node<T> extends BinaryTree.Node<T> {
         T v;
-        int h = 1;
-        Node<T> left;
-        Node<T> right;
 
         Node(T v) {
             this.v = v;
@@ -93,8 +90,8 @@ public class AvlTree<T> {
         root.left = newRoot.right;
         newRoot.right = root;
 
-        root.h = max(root.left.h, root.right.h) + 1;
-        newRoot.h = max(newRoot.left.h, newRoot.right.h) + 1;
+        root.h = height(root);
+        newRoot.h = height(newRoot);
         return newRoot;
     }
 
@@ -103,8 +100,8 @@ public class AvlTree<T> {
         root.right = newRoot.left;
         newRoot.left = root;
 
-        root.h = max(root.left.h, root.right.h) + 1;
-        newRoot.h = max(newRoot.left.h, newRoot.right.h) + 1;
+        root.h = height(root);
+        newRoot.h = height(newRoot);
         return newRoot;
     }
 
@@ -115,8 +112,8 @@ public class AvlTree<T> {
         lc.right = root.right;
         root.right = tmp;
 
-        lc.h = max(lc.left.h, lc.right.h);
-        root.h = max(root.left.h, root.right.h);
+        lc.h = height(lc);
+        root.h = height(root);
         return root;
     }
 
@@ -126,8 +123,8 @@ public class AvlTree<T> {
         rc.left = root.left;
         root.left = tmp;
 
-        rc.h = max(rc.left.h, rc.right.h);
-        root.h = max(root.right.h, root.right.h);
+        rc.h = height(rc);
+        root.h = height(root);
         return root;
     }
 
