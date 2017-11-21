@@ -1,4 +1,4 @@
-package anc.util.debug.btrace;
+package anc.tool.btrace;
 
 import com.sun.btrace.annotations.BTrace;
 import com.sun.btrace.annotations.Kind;
@@ -13,7 +13,7 @@ import static com.sun.btrace.BTraceUtils.println;
  */
 @BTrace
 public class BtraceTest {
-    @OnMethod(clazz = "anc.util.debug.btrace.Main", method = "f", location = @Location(Kind.CALL))
+    @OnMethod(clazz = "anc.tool.btrace.Main", method = "f", location = @Location(Kind.CALL))
     public static void onMain(String s) {
         println(Strings.concat(s, "btrace"));
     }
