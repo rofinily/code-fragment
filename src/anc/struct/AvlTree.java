@@ -1,6 +1,8 @@
 package anc.struct;
 
 import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -11,6 +13,11 @@ import java.util.stream.Stream;
 public class AvlTree<T> {
     Node<T> treeRoot;
     Comparator<T> c;
+
+    /**
+     * handle the always value-reference mechanism of method's parameter in Java
+     */
+    Node<T> tmp;
 
     public AvlTree(Comparator<T> c) {
         this.c = c;
@@ -28,57 +35,59 @@ public class AvlTree<T> {
     public static void main(String[] args) {
         Random r = new Random();
         AvlTree<Integer> avl = new AvlTree<>(Integer::compareTo);
-        Stream.generate(() -> r.nextInt(10)).limit(10).distinct().forEach(avl::insert);
-        System.out.println(avl);
+        Stream.generate(() -> r.nextInt(10)).limit(15).distinct().forEach(avl::insert);
+        avl.bfsTraversal();
     }
 
-    static class Node<T> extends BinaryTree.Node<T> {
-        T v;
 
-        Node(T v) {
-            this.v = v;
-        }
-
-        @Override
-        public String toString() {
-            return "Node{" +
-                    "v=" + v +
-                    ", h=" + h +
-                    '}';
-        }
-    }
-
-    private static <T> void insert(Node<T> r, Node<T> n, Comparator<T> c) {
-        int cmp = c.compare(r.v, n.v);
+    private static <T> void insert(NodeWrapper<T> r, Node<T> n, Comparator<T> c) {
+        int cmp = c.compare(r.node.v, n.v);
         if (cmp > 0) {
-            if (r.left == null) {
-                r.left = n;
-                r.h = height(r);
+            if (r.node.left == null) {
+                r.node.left = n;
+                r.node.h = height(r.node);
                 return;
             }
-            insert(r.left, n, c);
-            int bf = balanceFactor(r.left);
+            insert(new NodeWrapper<>(r.node.left), n, c);
+            int bf = balanceFactor(r.node.left);
             if (bf > 1) {
-                r.left = llRotate(r.left);
+                r.node.left = llRotate(r.node.left);
             } else if (bf < -1) {
-                r.left = lrRotate(r.left);
+                r.node.left = lrRotate(r.node.left);
             }
         } else {
-            if (r.right == null) {
-                r.right = n;
-                r.h = 2;
+            if (r.node.right == null) {
+                r.node.right = n;
+                r.node.h = height(r);
                 return;
             }
-            insert(r.right, n, c);
-            int bf = balanceFactor(r.right);
+            insert(r.node.right, n, c);
+            int bf = balanceFactor(r.node.right);
             if (bf > 1) {
-                r.right = rlRotate(r.right);
+                r.node.right = rlRotate(r.node.right);
             } else if (bf < -1) {
-                r.right = rrRotate(r.right);
+                r.node.right = rrRotate(r.node.right);
             }
         }
 
-        r.h = height(r);
+        r.node.h = height(r);
+        int bf = balanceFactor(r);
+        if (bf > 1) {
+            int lbf = balanceFactor(r.node.left);
+            if (lbf > 1) {
+                r = llRotate(r);
+            } else if (lbf < -1) {
+                r = lrRotate(r);
+            }
+        } else if (bf < -1) {
+            int rbf = balanceFactor(r.node.right);
+            if (rbf > 1) {
+                r = rlRotate(r);
+            } else if (rbf < -1) {
+                r = rrRotate(r);
+            }
+        }
+        r.node.h = height(r);
     }
 
     private static <T> void delete() {
@@ -138,6 +147,9 @@ public class AvlTree<T> {
     }
 
     private static <T> int balanceFactor(Node<T> n) {
+        if (n == null) {
+            return 0;
+        }
         int lh = n.left == null ? 0 : n.left.h;
         int rh = n.right == null ? 0 : n.right.h;
         return lh - rh;
@@ -145,5 +157,44 @@ public class AvlTree<T> {
 
     private static int max(int a, int b) {
         return a > b ? a : b;
+    }
+
+    void bfsTraversal() {
+        Queue<Node<T>> q = new LinkedList<>();
+        q.add(treeRoot);
+        while (q.size() != 0) {
+            Node<T> n = q.poll();
+            if (n.left != null) {
+                q.add(n.left);
+            }
+            if (n.right != null) {
+                q.add(n.right);
+            }
+            System.out.printf("%s ", n.v);
+        }
+    }
+
+    static class Node<T> {
+        T v;
+        int h = 1;
+        Node<T> left;
+        Node<T> right;
+
+        Node(T v) {
+            this.v = v;
+        }
+
+        @Override
+        public String toString() {
+            return "Node{" +
+                    "v=" + v +
+                    ", h=" + h +
+                    '}';
+        }
+    }
+
+    static class NodeWrapper<T> {
+        Node<T> node;
+
     }
 }

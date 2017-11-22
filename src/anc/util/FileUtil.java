@@ -8,10 +8,14 @@ import java.nio.file.Path;
  * @date 2017/11/9
  */
 public final class FileUtil {
+
     public static void delete(File file) {
         if (file.isDirectory()) {
-            for (File f : file.listFiles()) {
-                delete(f);
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    delete(f);
+                }
             }
         }
         file.delete();

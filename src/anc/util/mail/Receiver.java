@@ -15,7 +15,7 @@ import java.util.Properties;
 /**
  * @author anchore
  */
-public class MailReceive {
+public class Receiver {
     public static void main(String[] args) {
 
         Properties props = new Properties();

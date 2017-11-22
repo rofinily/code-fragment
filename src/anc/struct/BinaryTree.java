@@ -6,8 +6,5 @@ package anc.struct;
  */
 public class BinaryTree<T> {
     static class Node<T> {
-        int h = 1;
-        Node<T> left;
-        Node<T> right;
     }
 }
