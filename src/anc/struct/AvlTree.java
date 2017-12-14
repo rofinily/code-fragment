@@ -9,7 +9,7 @@ import java.util.stream.Stream;
  * @date 2017/11/21
  */
 public class AvlTree<T> {
-    NodeImpl<T> treeRoot;
+    Node<T> treeRoot;
     Comparator<T> c;
 
     /**
@@ -22,8 +22,7 @@ public class AvlTree<T> {
     }
 
     void insert(T v) {
-        NodeImpl<T> n = new NodeImpl<>(v);
-        n.thiz = n;
+        Node<T> n = new NodeImpl<>(v);
         if (treeRoot == null) {
             treeRoot = n;
             return;
@@ -40,132 +39,132 @@ public class AvlTree<T> {
     }
 
 
-    private static <T> void insert(NodeImpl<T> r, NodeImpl<T> n, Comparator<T> c) {
-        int cmp = c.compare(r.v, n.v);
+    private static <T> void insert(Node<T> r, Node<T> n, Comparator<T> c) {
+        int cmp = c.compare(r.value(), n.value());
         if (cmp > 0) {
-            if (r.left == null) {
-                r.left = n;
-                r.h = height(r);
+            if (r.left() == null) {
+                r.left(n);
+                r.height(height(r));
                 return;
             }
-            insert(r.left, n, c);
-            int bf = balanceFactor(r.left);
+            insert(r.left(), n, c);
+            int bf = balanceFactor(r.left());
             if (bf == 2) {
-                r.left = llRotate(r.left);
+                r.left(llRotate(r.left()));
             } else if (bf == -2) {
-                r.left = lrRotate(r.left);
+                r.left(lrRotate(r.left()));
             }
         } else {
-            if (r.right == null) {
-                r.right = n;
-                r.h = height(r);
+            if (r.right() == null) {
+                r.right(n);
+                r.height(height(r));
                 return;
             }
-            insert(r.right, n, c);
-            int bf = balanceFactor(r.right);
+            insert(r.right(), n, c);
+            int bf = balanceFactor(r.right());
             if (bf == 2) {
-                r.right = rlRotate(r.right);
+                r.right(rlRotate(r.right()));
             } else if (bf == -2) {
-                r.right = rrRotate(r.right);
+                r.right(rrRotate(r.right()));
             }
         }
 
-        r.h = height(r);
+        r.height(height(r));
 
         int bf = balanceFactor(r);
         if (bf == 2) {
-            int lbf = balanceFactor(r.left);
+            int lbf = balanceFactor(r.left());
             if (lbf == 1) {
-                r.thiz = llRotate(r);
+                r.self(llRotate(r));
             } else if (lbf == -1) {
-                r.thiz = lrRotate(r);
+                r.self(lrRotate(r));
             }
         } else if (bf == -2) {
-            int rbf = balanceFactor(r.right);
+            int rbf = balanceFactor(r.right());
             if (rbf == 1) {
-                r.thiz = rlRotate(r);
+                r.self(rlRotate(r));
             } else if (rbf == -1) {
-                r.thiz = rrRotate(r);
+                r.self(rrRotate(r));
             }
         }
 
-        r.h = height(r);
+        r.height(height(r));
     }
 
     private static <T> void delete() {
 
     }
 
-    private static <T> NodeImpl<T> llRotate(NodeImpl<T> root) {
+    private static <T> Node<T> llRotate(Node<T> root) {
         if (root == null) {
             return null;
         }
-        NodeImpl<T> newRoot = root.left;
-        root.left = newRoot.right;
-        newRoot.right = root;
+        Node<T> newRoot = root.left();
+        root.left(newRoot.right());
+        newRoot.right(root);
 
-        root.h = height(root);
-        newRoot.h = height(newRoot);
+        root.height(height(root));
+        newRoot.height(height(newRoot));
         return newRoot;
     }
 
-    private static <T> NodeImpl<T> rrRotate(NodeImpl<T> root) {
+    private static <T> Node<T> rrRotate(Node<T> root) {
         if (root == null) {
             return null;
         }
-        NodeImpl<T> newRoot = root.right;
-        root.right = newRoot.left;
-        newRoot.left = root;
+        Node<T> newRoot = root.right();
+        root.right(newRoot.left());
+        newRoot.left(root);
 
-        root.h = height(root);
-        newRoot.h = height(newRoot);
+        root.height(height(root));
+        newRoot.height(height(newRoot));
         return newRoot;
     }
 
 
-    private static <T> NodeImpl<T> lrRotate(NodeImpl<T> root) {
+    private static <T> Node<T> lrRotate(Node<T> root) {
         if (root == null) {
             return null;
         }
-        NodeImpl<T> lc = root.left;
-        NodeImpl<T> tmp = lc.right;
-        lc.right = root.right;
-        root.right = tmp;
+        Node<T> lc = root.left();
+        Node<T> tmp = lc.right();
+        lc.right(root.right());
+        root.right(tmp);
 
-        lc.h = height(lc);
-        root.h = height(root);
+        lc.height(height(lc));
+        root.height(height(root));
         return root;
     }
 
-    private static <T> NodeImpl<T> rlRotate(NodeImpl<T> root) {
+    private static <T> Node<T> rlRotate(Node<T> root) {
         if (root == null) {
             return null;
         }
-        NodeImpl<T> rc = root.right;
-        NodeImpl<T> tmp = rc.left;
-        rc.left = root.left;
-        root.left = tmp;
+        Node<T> rc = root.right();
+        Node<T> tmp = rc.left();
+        rc.left(root.left());
+        root.left(tmp);
 
-        rc.h = height(rc);
-        root.h = height(root);
+        rc.height(height(rc));
+        root.height(height(root));
         return root;
     }
 
-    private static <T> int height(NodeImpl<T> n) {
+    private static <T> int height(Node<T> n) {
         if (n == null) {
             return 0;
         }
-        int lh = n.left == null ? 0 : n.left.h;
-        int rh = n.right == null ? 0 : n.right.h;
+        int lh = n.left() == null ? 0 : n.left().height();
+        int rh = n.right() == null ? 0 : n.right().height();
         return max(lh, rh) + 1;
     }
 
-    private static <T> int balanceFactor(NodeImpl<T> n) {
+    private static <T> int balanceFactor(Node<T> n) {
         if (n == null) {
             return 0;
         }
-        int lh = n.left == null ? 0 : n.left.h;
-        int rh = n.right == null ? 0 : n.right.h;
+        int lh = n.left() == null ? 0 : n.left().height();
+        int rh = n.right() == null ? 0 : n.right().height();
         return lh - rh;
     }
 
@@ -188,55 +187,68 @@ public class AvlTree<T> {
         }
 
         @Override
+        public Node<T> self() {
+            return thiz;
+        }
+
+        @Override
+        public void self(Node<T> node) {
+            thiz = node.self();
+        }
+
+        @Override
         public T value() {
-            return thiz.v;
+            return self().value();
         }
 
         @Override
         public void value(T t) {
-            thiz.v = t;
+            self().value(t);
         }
 
         @Override
         public int height() {
-            return thiz.h;
+            return self().height();
         }
 
         @Override
         public void height(int h) {
-            thiz.h = h;
+            self().height(h);
         }
 
         @Override
         public Node<T> left() {
-            return thiz.left.thiz;
+            return self().left().self();
         }
 
         @Override
         public void left(Node<T> node) {
-            thiz.left.thiz = node;
+            self().left().self(node);
         }
 
         @Override
         public Node<T> right() {
-            return null;
+            return self().right().self();
         }
 
         @Override
         public void right(Node<T> node) {
-
+            self().right().self(node);
         }
 
         @Override
         public String toString() {
-            return "Node{" +
-                    "v=" + thiz.v +
-                    ", h=" + thiz.h +
-                    '}';
+            return "{ v=" + self().value() +
+                    ", h=" + self().height() +
+                    " }";
         }
     }
 
     interface Node<T> {
+        Node<T> self();
+
+        void self(Node<T> node);
+
         T value();
 
         void value(T t);
