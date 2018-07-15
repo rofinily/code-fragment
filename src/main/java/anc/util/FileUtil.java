@@ -24,5 +24,4 @@ public final class FileUtil {
     public static void delete(Path p) {
         delete(p.toFile());
     }
-
 }

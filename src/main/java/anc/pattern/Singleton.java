@@ -19,7 +19,7 @@ enum EnumSingleton {
     /**
      * instance init on class loaded
      */
-    INSTANCE;
+    INSTANCE
 }
 
 class HolderSingleton {

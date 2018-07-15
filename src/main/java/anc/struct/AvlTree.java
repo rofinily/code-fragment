@@ -241,7 +241,7 @@ public class AvlTree<V> {
 
         Node(NodeKey nodeKey, V value) {
             this.value = value;
-            this.nodeKey = nodeKey;
+//            this.nodeKey = nodeKey;
             left = new NodeKey();
             right = new NodeKey();
         }

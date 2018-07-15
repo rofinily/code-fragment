@@ -4,7 +4,6 @@ import anc.util.DataSetUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertTrue;
@@ -20,7 +19,7 @@ public class FinderTest {
     }
 
     @Test
-    public void testFindMth2Nth() throws Exception {
+    public void testFindMth2Nth() {
         int m = a.length / 10,
                 n = a.length / 2;
         f.findMth2Nth(m, n);
@@ -29,7 +28,7 @@ public class FinderTest {
     }
 
     @Test
-    public void testFindKth() throws FileNotFoundException {
+    public void testFindKth() {
         int k = a.length / 2;
         f.findMth2Nth(k, k);
 

@@ -3,7 +3,6 @@ package anc.struct;
 import anc.util.DataSetUtil;
 import anc.util.Sort;
 
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 
 public class Heap {
@@ -75,7 +74,7 @@ public class Heap {
         return true;
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
         Heap h = new Heap();
         h.build();
         h.sort();
