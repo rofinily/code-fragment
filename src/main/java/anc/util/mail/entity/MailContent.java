@@ -5,9 +5,12 @@ import anc.util.StrUtil;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author anchore
+ */
 public class MailContent {
-
     private Map<String, String> type2Content = new HashMap<>();
+
     private static final String[] TYPE_PRIORITY = new String[]{"text/html", "text/plain"};
 
     public String put(String type, String content) {

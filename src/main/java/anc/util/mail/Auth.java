@@ -19,6 +19,6 @@ public class Auth extends Authenticator {
 
     @Override
     protected PasswordAuthentication getPasswordAuthentication() {
-        return new PasswordAuthentication(account.getOwner().getAddr(), account.getPassword());
+        return new PasswordAuthentication(account.getOwner().getAddress(), account.getPassword());
     }
 }

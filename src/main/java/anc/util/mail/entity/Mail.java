@@ -1,14 +1,5 @@
 package anc.util.mail.entity;
 
-import javax.mail.Flags;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Part;
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -16,126 +7,102 @@ import java.util.Date;
  * @author anchore
  */
 public class Mail {
-
-    private User[] from;
-    private User[] to;
-    private User[] cc;
-    private User[] bcc;
-    private Date sentDate;
-    private Date receivedDate;
-    private String subject;
-    private String content;
+    private User[] from, to, cc, bcc;
+    private Date sentDate, receivedDate;
+    private String subject, content;
     private boolean seen;
 
-    public static Mail create() {
-        return new Mail();
+    public User[] getFrom() {
+        return from;
     }
 
-    public static Mail fromMsg(Message msg) {
-        try {
-            return create()
-                    .from(User.fromAddrs(msg.getFrom())[0])
-                    .to(User.fromAddrs(msg.getRecipients(Message.RecipientType.TO)))
-                    .cc(User.fromAddrs(msg.getRecipients(Message.RecipientType.CC)))
-                    .bcc(User.fromAddrs(msg.getRecipients(Message.RecipientType.BCC)))
-                    .sentDate(msg.getSentDate())
-                    .receivedDate(msg.getReceivedDate())
-                    .subject(msg.getSubject())
-                    .content(getContent(msg))
-                    .seen(msg.isSet(Flags.Flag.SEEN));
-        } catch (MessagingException | IOException e) {
-            e.printStackTrace();
-            return null;
+    public User[] getTo() {
+        return to;
+    }
+
+    public User[] getCc() {
+        return cc;
+    }
+
+    public User[] getBcc() {
+        return bcc;
+    }
+
+    public Date getSentDate() {
+        return sentDate;
+    }
+
+    public Date getReceivedDate() {
+        return receivedDate;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public boolean isSeen() {
+        return seen;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        Mail mail = new Mail();
+
+        public Builder from(User... from) {
+            mail.from = from;
+            return this;
         }
-    }
 
-    public Message toMessage(Session session) {
-        Message msg = new MimeMessage(session);
-        try {
-            msg.addFrom(User.toAddrs(from));
-            msg.setRecipients(Message.RecipientType.TO, User.toAddrs(to));
-            msg.setRecipients(Message.RecipientType.CC, User.toAddrs(cc));
-            msg.setRecipients(Message.RecipientType.BCC, User.toAddrs(bcc));
-            msg.setSubject(subject);
-            msg.setSentDate(sentDate);
-            msg.setContent(content, "text/html; charset=UTF-8");
-            return msg;
-        } catch (MessagingException | UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return null;
+        public Builder to(User... to) {
+            mail.to = to;
+            return this;
         }
-    }
 
-    public static String getContent(Message msg) throws IOException, MessagingException {
-        MailContent mc = new MailContent();
-        resolveContent(msg, mc);
-        return mc.getDefault();
-    }
-
-    private static void resolveContent(Part part, MailContent mc) throws MessagingException, IOException {
-        if (part.isMimeType("text/html")) {
-            mc.put("text/html", part.getContent().toString());
-            return;
+        public Builder cc(User... cc) {
+            mail.cc = cc;
+            return this;
         }
-        if (part.isMimeType("text/plain")) {
-            mc.put("text/plain", part.getContent().toString());
-            return;
+
+        public Builder bcc(User... bcc) {
+            mail.bcc = bcc;
+            return this;
         }
-        if (part.isMimeType("message/rfc822")) {
-            resolveContent((Part) part.getContent(), mc);
-            return;
+
+        public Builder sentDate(Date sentDate) {
+            mail.sentDate = sentDate;
+            return this;
         }
-        if (part.isMimeType("multipart/*")) {
-            Multipart multipart = (Multipart) part.getContent();
-            for (int i = 0, count = multipart.getCount(); i < count; i++) {
-                resolveContent(multipart.getBodyPart(i), mc);
-            }
+
+        public Builder receivedDate(Date receivedDate) {
+            mail.receivedDate = receivedDate;
+            return this;
         }
-    }
 
-    public Mail from(User... from) {
-        this.from = from;
-        return this;
-    }
+        public Builder subject(String subject) {
+            mail.subject = subject;
+            return this;
+        }
 
-    public Mail to(User... to) {
-        this.to = to;
-        return this;
-    }
+        public Builder content(String content) {
+            mail.content = content;
+            return this;
+        }
 
-    public Mail cc(User... cc) {
-        this.cc = cc;
-        return this;
-    }
+        public Builder seen(boolean seen) {
+            mail.seen = seen;
+            return this;
+        }
 
-    public Mail bcc(User... bcc) {
-        this.bcc = bcc;
-        return this;
-    }
-
-    public Mail sentDate(Date sentDate) {
-        this.sentDate = sentDate;
-        return this;
-    }
-
-    public Mail receivedDate(Date receivedDate) {
-        this.receivedDate = receivedDate;
-        return this;
-    }
-
-    public Mail subject(String subject) {
-        this.subject = subject;
-        return this;
-    }
-
-    public Mail content(String content) {
-        this.content = content;
-        return this;
-    }
-
-    public Mail seen(boolean seen) {
-        this.seen = seen;
-        return this;
+        public Mail build() {
+            return mail;
+        }
     }
 
     @Override
@@ -153,4 +120,25 @@ public class Mail {
                 '}';
     }
 
+    /**
+     * @author anchore
+     * @date 2018/7/15
+     */
+    public enum ContentType {
+        //
+        TEXT_HTML("text/html"),
+        TEXT_PLAIN("text/html"),
+        MESSAGE_RFC822("message/rfc822"),
+        MULTIPART_("multipart/*");
+
+        String type;
+
+        ContentType(String type) {
+            this.type = type;
+        }
+
+        public String getType() {
+            return type;
+        }
+    }
 }

@@ -1,10 +1,13 @@
 package anc.util.mail.entity;
 
+/**
+ * @author anchore
+ */
 public class Account {
     private final User owner;
     private final String password;
 
-    private Account(User owner, String password) {
+    public Account(User owner, String password) {
         this.owner = owner;
         this.password = password;
     }

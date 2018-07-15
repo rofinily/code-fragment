@@ -2,34 +2,45 @@ package anc.util.mail.entity;
 
 import java.util.Properties;
 
+/**
+ * @author anchore
+ */
 public class Server {
     private String host;
     private int port;
     private Server.Protocol protocol;
     private boolean useSsl;
 
-    public static Server create() {
-        return new Server();
+    public static Builder builder() {
+        return new Builder();
     }
 
-    public Server host(String host) {
-        this.host = host;
-        return this;
-    }
+    public static class Builder {
+        Server server = new Server();
 
-    public Server port(int port) {
-        this.port = port;
-        return this;
-    }
+        public Builder host(String host) {
+            server.host = host;
+            return this;
+        }
 
-    public Server protocol(Protocol protocol) {
-        this.protocol = protocol;
-        return this;
-    }
+        public Builder port(int port) {
+            server.port = port;
+            return this;
+        }
 
-    public Server useSsl(boolean useSsl) {
-        this.useSsl = useSsl;
-        return this;
+        public Builder protocol(Protocol protocol) {
+            server.protocol = protocol;
+            return this;
+        }
+
+        public Builder useSsl(boolean useSsl) {
+            server.useSsl = useSsl;
+            return this;
+        }
+
+        public Server build() {
+            return server;
+        }
     }
 
     public void setProperty(Properties props) {
@@ -51,6 +62,7 @@ public class Server {
     }
 
     public enum Protocol {
+        //
         SMTP("smtp") {
             @Override
             void setProperty(Properties props) {
