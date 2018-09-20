@@ -1,4 +1,4 @@
-package anc.util.mail.entity;
+package anc.mail.entity;
 
 import anc.util.StrUtil;
 

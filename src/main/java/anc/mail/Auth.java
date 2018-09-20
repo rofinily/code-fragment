@@ -1,6 +1,6 @@
-package anc.util.mail;
+package anc.mail;
 
-import anc.util.mail.entity.Account;
+import anc.mail.entity.Account;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;

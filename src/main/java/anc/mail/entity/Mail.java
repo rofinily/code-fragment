@@ -1,4 +1,4 @@
-package anc.util.mail.entity;
+package anc.mail.entity;
 
 import java.util.Arrays;
 import java.util.Date;

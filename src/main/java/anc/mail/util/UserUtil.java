@@ -1,6 +1,6 @@
-package anc.util.mail.util;
+package anc.mail.util;
 
-import anc.util.mail.entity.User;
+import anc.mail.entity.User;
 
 import javax.mail.Address;
 import javax.mail.internet.InternetAddress;

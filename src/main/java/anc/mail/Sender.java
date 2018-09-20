@@ -1,10 +1,10 @@
-package anc.util.mail;
+package anc.mail;
 
-import anc.util.mail.entity.Account;
-import anc.util.mail.entity.Mail;
-import anc.util.mail.entity.Server;
-import anc.util.mail.entity.User;
-import anc.util.mail.util.MailUtil;
+import anc.mail.entity.Account;
+import anc.mail.entity.Mail;
+import anc.mail.entity.Server;
+import anc.mail.entity.User;
+import anc.mail.util.MailUtil;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;

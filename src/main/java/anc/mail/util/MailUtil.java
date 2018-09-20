@@ -1,7 +1,7 @@
-package anc.util.mail.util;
+package anc.mail.util;
 
-import anc.util.mail.entity.Mail;
-import anc.util.mail.entity.MailContent;
+import anc.mail.entity.Mail;
+import anc.mail.entity.MailContent;
 
 import javax.mail.Flags;
 import javax.mail.Message;
@@ -13,10 +13,10 @@ import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.util.Optional;
 
-import static anc.util.mail.entity.Mail.ContentType.MESSAGE_RFC822;
-import static anc.util.mail.entity.Mail.ContentType.MULTIPART_;
-import static anc.util.mail.entity.Mail.ContentType.TEXT_HTML;
-import static anc.util.mail.entity.Mail.ContentType.TEXT_PLAIN;
+import static anc.mail.entity.Mail.ContentType.MESSAGE_RFC822;
+import static anc.mail.entity.Mail.ContentType.MULTIPART_;
+import static anc.mail.entity.Mail.ContentType.TEXT_HTML;
+import static anc.mail.entity.Mail.ContentType.TEXT_PLAIN;
 
 /**
  * @author anchore
