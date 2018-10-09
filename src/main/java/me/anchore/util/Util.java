@@ -1,23 +1,25 @@
 package me.anchore.util;
 
-public class Util {
+/**
+ * @author anchore
+ */
+public final class Util {
 
-    public static <T> void requireNonNull(T t) {
-        if (t == null) {
-            throw new NullPointerException();
+    private static Throwable getRootCause(Throwable t) {
+        Throwable cause = t.getCause();
+        if (cause == null) {
+            return t;
         }
+        return getRootCause(cause);
     }
 
-    public static <T> void requireNonNull(T[] ts) {
-        for (T t : ts) {
-            requireNonNull(t);
+    public static String getRootCauseMessage(Throwable t) {
+        Throwable rootCause = getRootCause(t);
+        String message = rootCause.getMessage();
+        String simpleThrowable = rootCause.getClass().getSimpleName();
+        if (message == null) {
+            return simpleThrowable;
         }
+        return String.format("%s: %s", simpleThrowable, message);
     }
-
-    @SafeVarargs
-    public static <T> void requireNonNull(T t0, T... ts) {
-        requireNonNull(t0);
-        requireNonNull(ts);
-    }
-
 }

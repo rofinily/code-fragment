@@ -1,13 +1,15 @@
 package me.anchore.io.util;
 
-
 import me.anchore.io.Releasable;
+import me.anchore.log.Loggers;
 import sun.misc.Cleaner;
 import sun.nio.ch.DirectBuffer;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.nio.MappedByteBuffer;
+import java.nio.ByteBuffer;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
  * @author anchore
@@ -19,7 +21,15 @@ public class IoUtil {
             try {
                 closeable.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Loggers.getLogger().error(e);
+            }
+        }
+    }
+
+    public static void close(Closeable... closeables) {
+        if (closeables != null) {
+            for (Closeable closeable : closeables) {
+                close(closeable);
             }
         }
     }
@@ -31,17 +41,23 @@ public class IoUtil {
     }
 
     public static void release(Releasable... releasables) {
-        for (Releasable releasable : releasables) {
-            release(releasable);
+        if (releasables != null) {
+            for (Releasable releasable : releasables) {
+                release(releasable);
+            }
         }
     }
 
-    public static void release(MappedByteBuffer buf) {
-        if (buf != null) {
-            buf.force();
-            Cleaner cleaner = ((DirectBuffer) buf).cleaner();
-            cleaner.clean();
-            cleaner.clear();
+    public static void release(final ByteBuffer buf) {
+        if (buf != null && buf.isDirect()) {
+            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                Cleaner cleaner = ((DirectBuffer) buf).cleaner();
+                if (cleaner != null) {
+                    cleaner.clean();
+                    cleaner.clear();
+                }
+                return null;
+            });
         }
     }
 }

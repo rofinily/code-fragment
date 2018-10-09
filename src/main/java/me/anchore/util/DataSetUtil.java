@@ -24,7 +24,7 @@ public class DataSetUtil {
     }
 
     public static int[] getIntArray(InputStream is) {
-        Util.requireNonNull(is);
+        Assert.notNull(is);
 
         Scanner sc = null;
         int[] a;
@@ -48,15 +48,6 @@ public class DataSetUtil {
     public static InputStream getInputStream(Path p) {
         try {
             return Files.newInputStream(p);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static InputStream getInputStream(Command command) {
-        try {
-            return command.exec().getInputStream();
         } catch (IOException e) {
             e.printStackTrace();
             return null;

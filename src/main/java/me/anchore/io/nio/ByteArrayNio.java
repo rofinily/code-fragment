@@ -4,13 +4,14 @@ import me.anchore.io.ByteIo;
 import me.anchore.io.IntIo;
 import me.anchore.io.Io;
 import me.anchore.io.LongIo;
+import me.anchore.io.nio.NioConf.IoType;
 import me.anchore.io.util.IoUtil;
 
 /**
  * @author anchore
  * @date 2018/7/20
  */
-public class ByteArrayNio extends BaseNio<byte[]> implements Io<byte[]> {
+public class ByteArrayNio extends BaseNio implements Io<byte[]> {
     private LongIo position;
     private IntIo length;
     private ByteIo data;
@@ -22,11 +23,16 @@ public class ByteArrayNio extends BaseNio<byte[]> implements Io<byte[]> {
         init();
     }
 
-
     private void init() {
         position = new LongNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "pos")));
         length = new IntNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "len")));
         data = new ByteNio(conf.ofAnotherPath(String.format("%s/%s", conf.getPath(), "data")));
+        if (conf.isAppend()) {
+            LongIo lastPosition = new LongNio(new NioConf(
+                    String.format("%s/%s", conf.getPath(), "last_pos"), IoType.READ, conf.getPageSize(), conf.getFileSize(), conf.isMapped()));
+            currentPos = lastPosition.isReadable() ? lastPosition.get(0) : 0;
+            lastPosition.release();
+        }
     }
 
     @Override
@@ -50,16 +56,20 @@ public class ByteArrayNio extends BaseNio<byte[]> implements Io<byte[]> {
     }
 
     @Override
-    public void flush() {
-    }
-
-    @Override
     public boolean isReadable() {
-        return false;
+        return position != null && position.isReadable() &&
+                length != null && length.isReadable() &&
+                data != null && data.isReadable();
     }
 
     @Override
     public void release() {
+        if (conf.isAppend()) {
+            LongIo lastPosition = new LongNio(new NioConf(
+                    String.format("%s/%s", conf.getPath(), "last_pos"), IoType.OVERWRITE, conf.getPageSize(), conf.getFileSize(), conf.isMapped()));
+            lastPosition.put(0, currentPos);
+            lastPosition.release();
+        }
         IoUtil.release(data, position, length);
         data = null;
         position = null;

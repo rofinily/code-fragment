@@ -1,13 +1,10 @@
 package me.anchore.io.nio;
 
-
-import me.anchore.io.Io;
-
 /**
  * @author anchore
  * @date 2018/7/20
  */
-abstract class BaseNio<T> implements Io<T> {
+abstract class BaseNio {
     NioConf conf;
 
     BaseNio(NioConf conf) {

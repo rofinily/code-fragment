@@ -1,8 +1,7 @@
 package me.anchore.fp;
 
-import me.anchore.util.ArrayNewer;
-
 import java.util.Comparator;
+import java.util.function.IntFunction;
 
 /**
  * @author anchore
@@ -54,7 +53,8 @@ public class MethodRef {
      * Integer[] integers = new Integer[10];
      */
     void kind4() {
-        Integer[] integers = ArrayNewer.newArray(Integer[]::new, 10);
+        IntFunction<Integer[]> arrayNewer = Integer[]::new;
+        Integer[] integers = arrayNewer.apply(10);
         System.out.println(integers.length);
     }
 }

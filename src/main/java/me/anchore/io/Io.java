@@ -21,7 +21,6 @@ public interface Io<T> extends Writer<T>, Reader<T> {
          * 数据类型
          */
         BYTE, INT, LONG, DOUBLE,
-        BYTE_ARRAY, STRING, BITMAP, LONG_ARRAY,
-        REALTIME_COLUMN
+        BYTE_ARRAY, STRING
     }
 }

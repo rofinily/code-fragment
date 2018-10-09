@@ -23,7 +23,6 @@ public class Nios {
             case BYTE:
                 return (IO) new ByteNio(conf);
             case BYTE_ARRAY:
-            case LONG_ARRAY:
             default:
                 return Crasher.crash(String.format(
                         "illegal cube build config: %s as %s at %s", conf.isWrite() ? "write" : "read", dataType, conf.getPath()));
