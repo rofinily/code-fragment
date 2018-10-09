@@ -10,6 +10,9 @@ public final class Util {
         if (cause == null) {
             return t;
         }
+        if (cause == t) {
+            return t;
+        }
         return getRootCause(cause);
     }
 

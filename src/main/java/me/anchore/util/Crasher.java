@@ -5,41 +5,35 @@ package me.anchore.util;
  */
 public class Crasher {
     public static <T> T crash(String msg, Throwable t) {
-        throw new RuntimeException(msg, t);
+        throw new CrashException(msg, t);
     }
 
     public static <T> T crash(String msg) {
-        throw new RuntimeException(msg, null);
+        throw new CrashException(msg);
     }
 
     public static <T> T crash(Throwable t) {
-        throw new RuntimeException(null, t);
+        throw new CrashException(t);
     }
 
     public static <T> T crash() {
-        throw new RuntimeException(null, null);
+        throw new CrashException();
     }
 
-
-    public static void crashIf(boolean exp, String msg) {
-        if (exp) {
-            throw new RuntimeException(msg, null);
+    public static class CrashException extends RuntimeException {
+        CrashException() {
         }
-    }
 
-    public static <T> T checkedCrash(String msg, Throwable t) throws Exception {
-        throw new Exception(msg, t);
-    }
+        CrashException(String message) {
+            super(message);
+        }
 
-    public static <T> T checkedCrash(String msg) throws Exception {
-        throw new Exception(msg, null);
-    }
+        CrashException(String message, Throwable cause) {
+            super(message, cause);
+        }
 
-    public static <T> T checkedCrash(Throwable t) throws Exception {
-        throw new Exception(null, t);
-    }
-
-    public static <T> T checkedCrash() throws Exception {
-        throw new Exception(null, null);
+        CrashException(Throwable cause) {
+            super(cause);
+        }
     }
 }
