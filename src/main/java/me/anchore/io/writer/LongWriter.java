@@ -3,6 +3,7 @@ package me.anchore.io.writer;
 /**
  * @author anchore
  */
-public interface LongWriter extends PrimitiveWriter {
-    void put(long pos, long val);
+public interface LongWriter extends PrimitiveWriter<Long> {
+
+    void putLong(long pos, long val);
 }

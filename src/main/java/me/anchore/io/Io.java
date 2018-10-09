@@ -8,7 +8,7 @@ import me.anchore.io.writer.Writer;
  * @author anchore
  * @date 2018/7/20
  */
-public interface Io extends Writer, Reader {
+public interface Io<T> extends Writer<T>, Reader<T> {
     enum Type {
         /**
          * 读写类型

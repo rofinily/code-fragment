@@ -3,8 +3,7 @@ package me.anchore.io.reader;
 /**
  * @author anchore
  */
-public interface DoubleReader extends PrimitiveReader {
+public interface DoubleReader extends PrimitiveReader<Double> {
 
-    double get(long pos);
-
+    double getDouble(long pos);
 }

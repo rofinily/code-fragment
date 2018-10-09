@@ -2,15 +2,15 @@ package me.anchore.io.nio;
 
 import me.anchore.io.ByteIo;
 import me.anchore.io.IntIo;
+import me.anchore.io.Io;
 import me.anchore.io.LongIo;
-import me.anchore.io.ObjectIo;
 import me.anchore.io.util.IoUtil;
 
 /**
  * @author anchore
  * @date 2018/7/20
  */
-public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
+public class ByteArrayNio extends BaseNio<byte[]> implements Io<byte[]> {
     private LongIo position;
     private IntIo length;
     private ByteIo data;
@@ -38,11 +38,6 @@ public class ByteArrayNio extends BaseNio implements ObjectIo<byte[]> {
             bytes[(int) i] = data.get(start + i);
         }
         return bytes;
-    }
-
-    @Override
-    public long getLastPosition(long pos) {
-        return 0;
     }
 
     @Override

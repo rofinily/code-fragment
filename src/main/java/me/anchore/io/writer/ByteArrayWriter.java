@@ -3,11 +3,10 @@ package me.anchore.io.writer;
 /**
  * @author anchore
  */
-public interface ByteArrayWriter extends ObjectWriter<byte[]> {
+public interface ByteArrayWriter extends Writer<byte[]> {
     String CONTENT = "content";
     String POSITION = "position";
     String LENGTH = "length";
-    String LAST_POSITION = "last_position";
 
     byte[] NULL_VALUE = new byte[0];
 }

@@ -7,7 +7,7 @@ import me.anchore.io.IntIo;
  * @author anchore
  * @date 2018/7/21
  */
-public class IntNio extends BaseAtomNio implements IntIo {
+public class IntNio extends BaseAtomNio<Integer> implements IntIo {
     public IntNio(NioConf conf) {
         super(conf);
     }
@@ -18,13 +18,23 @@ public class IntNio extends BaseAtomNio implements IntIo {
     }
 
     @Override
-    public int get(long pos) {
+    public Integer get(long pos) {
+        return getInt(pos);
+    }
+
+    @Override
+    public void put(long pos, Integer val) {
+        putInt(pos, val);
+    }
+
+    @Override
+    public int getInt(long pos) {
         initBuf(getPage(pos));
         return buf.getInt(getOffset(pos));
     }
 
     @Override
-    public void put(long pos, int val) {
+    public void putInt(long pos, int val) {
         initBuf(getPage(pos));
         int offset = getOffset(pos);
         buf.putInt(offset, val);

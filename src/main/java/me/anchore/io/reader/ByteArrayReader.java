@@ -6,7 +6,7 @@ import me.anchore.io.writer.ByteArrayWriter;
 /**
  * @author anchore
  */
-public interface ByteArrayReader extends ObjectReader<byte[]> {
+public interface ByteArrayReader extends Reader<byte[]> {
     String CONTENT = ByteArrayWriter.CONTENT;
     String POSITION = ByteArrayWriter.POSITION;
     String LENGTH = ByteArrayWriter.LENGTH;

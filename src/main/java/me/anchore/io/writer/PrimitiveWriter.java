@@ -3,5 +3,5 @@ package me.anchore.io.writer;
 /**
  * @author anchore
  */
-public interface PrimitiveWriter extends Writer {
+public interface PrimitiveWriter<T> extends Writer<T> {
 }

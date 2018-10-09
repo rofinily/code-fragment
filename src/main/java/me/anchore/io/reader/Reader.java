@@ -6,7 +6,10 @@ import me.anchore.io.Releasable;
 /**
  * @author anchore
  */
-public interface Reader extends Releasable {
+public interface Reader<T> extends Releasable {
+
+    T get(long pos);
+
     /**
      * 是否可读
      *

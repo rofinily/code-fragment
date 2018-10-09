@@ -15,7 +15,7 @@ import java.nio.channels.FileChannel.MapMode;
  * @author anchore
  * @date 2018/7/20
  */
-abstract class BaseAtomNio extends BaseNio {
+abstract class BaseAtomNio<T> extends BaseNio<T> {
     private FileChannel ch;
 
     ByteBuffer buf;

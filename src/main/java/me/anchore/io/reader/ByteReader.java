@@ -3,8 +3,7 @@ package me.anchore.io.reader;
 /**
  * @author anchore
  */
-public interface ByteReader extends PrimitiveReader {
+public interface ByteReader extends PrimitiveReader<Byte> {
 
-    byte get(long pos);
-
+    byte getByte(long pos);
 }

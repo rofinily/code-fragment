@@ -3,8 +3,7 @@ package me.anchore.io.writer;
 /**
  * @author anchore
  */
-public interface ByteWriter extends PrimitiveWriter {
+public interface ByteWriter extends PrimitiveWriter<Byte> {
 
-    void put(long pos, byte val);
-
+    void putByte(long pos, byte val);
 }

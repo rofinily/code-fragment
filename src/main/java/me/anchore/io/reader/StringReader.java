@@ -2,11 +2,12 @@ package me.anchore.io.reader;
 
 import me.anchore.io.writer.StringWriter;
 
+import java.nio.charset.Charset;
+
 /**
  * @author anchore
  */
-public interface StringReader extends ObjectReader<String> {
+public interface StringReader extends Reader<String> {
 
-    String DEFAULT_CHARSET = StringWriter.DEFAULT_CHARSET;
-
+    Charset CHARSET = StringWriter.CHARSET;
 }
