@@ -48,14 +48,13 @@ public @interface EqualsAndHashCode {
                     });
         }
 
-        static void f() {
-        }
-
         public static int hashCode(Object o) {
             int hash = 0;
             if (o == null) {
                 return hash;
             }
+
+            Object.class.getDeclaredMethod("hashCode").invoke(o)
 
             return Arrays.stream(o.getClass().getDeclaredFields()).
                     filter(field -> field.isAnnotationPresent(EqualsAndHashCode.class)).
