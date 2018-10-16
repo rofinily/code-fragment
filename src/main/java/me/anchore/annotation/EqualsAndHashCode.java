@@ -7,7 +7,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author anchore
@@ -34,18 +38,15 @@ public @interface EqualsAndHashCode {
         }
 
         private static boolean thisEquals(Object o1, Object o2) {
-            return Arrays.stream(o1.getClass().getDeclaredFields()).
-                    filter(field -> field.isAnnotationPresent(EqualsAndHashCode.class)).
-                    filter(field -> !field.getDeclaredAnnotation(EqualsAndHashCode.class).ignore()).
-                    allMatch(field -> {
-                        field.setAccessible(true);
-                        try {
-                            return Checker.equals(field.get(o1), field.get(o2));
-                        } catch (IllegalAccessException e) {
-                            Loggers.getLogger().error(e);
-                            return false;
-                        }
-                    });
+            return getAllFields(o1.getClass()).stream().allMatch(field -> {
+                field.setAccessible(true);
+                try {
+                    return Checker.equals(field.get(o1), field.get(o2));
+                } catch (IllegalAccessException e) {
+                    Loggers.getLogger().error(e);
+                    return false;
+                }
+            });
         }
 
         public static int hashCode(Object o) {
@@ -53,22 +54,27 @@ public @interface EqualsAndHashCode {
             if (o == null) {
                 return hash;
             }
+            return getAllFields(o.getClass()).stream().mapToInt(field -> {
+                try {
+                    field.setAccessible(true);
+                    Object f = field.get(o);
+                    return f == null ? 0 : f.hashCode();
+                } catch (IllegalAccessException e) {
+                    Loggers.getLogger().error(e);
+                    return 0;
+                }
+            }).reduce(hash, (a, b) -> 31 * a + b);
+        }
 
-            Object.class.getDeclaredMethod("hashCode").invoke(o)
-
-            return Arrays.stream(o.getClass().getDeclaredFields()).
+        private static List<Field> getAllFields(Class<?> cls) {
+            List<Field> fields = new ArrayList<>();
+            if (cls.getSuperclass() != null) {
+                fields.addAll(getAllFields(cls.getSuperclass()));
+            }
+            fields.addAll(Arrays.stream(cls.getDeclaredFields()).
                     filter(field -> field.isAnnotationPresent(EqualsAndHashCode.class)).
-                    filter(field -> !field.getDeclaredAnnotation(EqualsAndHashCode.class).ignore()).
-                    mapToInt(field -> {
-                        try {
-                            field.setAccessible(true);
-                            Object f = field.get(o);
-                            return f == null ? 0 : f.hashCode();
-                        } catch (IllegalAccessException e) {
-                            Loggers.getLogger().error(e);
-                            return 0;
-                        }
-                    }).reduce(hash, (a, b) -> 31 * a + b);
+                    filter(field -> !field.getDeclaredAnnotation(EqualsAndHashCode.class).ignore()).collect(Collectors.toList()));
+            return fields;
         }
     }
 }

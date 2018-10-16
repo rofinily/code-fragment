@@ -10,7 +10,7 @@ import org.junit.Test;
 public class EqualsAndHashCodeTest {
 
     @Test
-    public void equals() {
+    public void testEqualsAndHashCode() {
         A a1 = new A(1, -1, '2');
         A a2 = new A(1, -2, '3');
         A a3 = new A(2, -1, '2');

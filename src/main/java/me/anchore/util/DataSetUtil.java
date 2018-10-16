@@ -1,7 +1,5 @@
 package me.anchore.util;
 
-import me.anchore.constant.Const;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -31,7 +29,7 @@ public class DataSetUtil {
         try {
             sc = new Scanner(is);
             if (!sc.hasNextInt()) {
-                return Const.EMPTY_INT_ARRAY;
+                return new int[]{};
             }
             a = new int[sc.nextInt()];
             for (int i = 0; sc.hasNextInt(); ) {
