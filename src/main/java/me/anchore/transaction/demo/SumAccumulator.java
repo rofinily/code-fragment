@@ -1,6 +1,6 @@
-package me.anchore.beta.transaction.demo;
+package me.anchore.transaction.demo;
 
-import me.anchore.beta.transaction.Transactional;
+import me.anchore.transaction.Transactional;
 
 import java.util.Random;
 

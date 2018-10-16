@@ -36,6 +36,12 @@ public final class Assert {
         notNull(t, "[Assertion failed] - this argument is required; it must not be null");
     }
 
+    public static <T> void allNotNull(T[] ts) {
+        for (T t : ts) {
+            notNull(t);
+        }
+    }
+
     private Assert() {
         throw new InstantiationError();
     }

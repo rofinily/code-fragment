@@ -1,9 +1,9 @@
-package me.anchore.beta.transaction.demo;
+package me.anchore.transaction.demo;
 
-import me.anchore.beta.transaction.Transaction;
-import me.anchore.beta.transaction.TransactionInterceptor;
-import me.anchore.beta.transaction.TransactionProxy;
-import me.anchore.beta.transaction.TransationManager;
+import me.anchore.transaction.Transaction;
+import me.anchore.transaction.TransactionInterceptor;
+import me.anchore.transaction.TransactionProxy;
+import me.anchore.transaction.TransationManager;
 
 /**
  * @author anchore

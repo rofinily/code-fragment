@@ -1,4 +1,4 @@
-package me.anchore.beta.transaction;
+package me.anchore.transaction;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

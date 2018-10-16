@@ -1,4 +1,4 @@
-package me.anchore.beta.transaction;
+package me.anchore.transaction;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;

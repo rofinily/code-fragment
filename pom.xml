@@ -8,10 +8,6 @@
     <artifactId>code-fragment</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <modules>
-        <module>code-fragment-beta</module>
-    </modules>
-
     <dependencies>
         <!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api -->
         <dependency>
@@ -66,6 +62,18 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.1.24.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.45</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.196</version>
         </dependency>
 
     </dependencies>

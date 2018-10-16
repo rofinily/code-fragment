@@ -1,4 +1,4 @@
-package me.anchore.beta.transaction;
+package me.anchore.transaction;
 
 /**
  * @author anchore

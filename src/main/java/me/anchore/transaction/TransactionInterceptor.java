@@ -1,4 +1,4 @@
-package me.anchore.beta.transaction;
+package me.anchore.transaction;
 
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -24,7 +24,7 @@ public class TransactionInterceptor implements MethodInterceptor {
         return proxy.invokeSuper(obj, args);
     }
 
-    private Object interceptTx(Object obj, Method method, Object[] args, MethodProxy proxy) {
+    private Object interceptTx(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
         try {
             tx.begin();
 
