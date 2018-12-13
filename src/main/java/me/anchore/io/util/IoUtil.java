@@ -2,8 +2,6 @@ package me.anchore.io.util;
 
 import me.anchore.io.Releasable;
 import me.anchore.log.Loggers;
-import sun.misc.Cleaner;
-import sun.nio.ch.DirectBuffer;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -51,11 +49,8 @@ public class IoUtil {
     public static void release(final ByteBuffer buf) {
         if (buf != null && buf.isDirect()) {
             AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-                Cleaner cleaner = ((DirectBuffer) buf).cleaner();
-                if (cleaner != null) {
-                    cleaner.clean();
-                    cleaner.clear();
-                }
+                // fixme jdk11 不能用
+//                FileChannelImpl.class.getMethod("unmap", MappedByteBuffer.class);
                 return null;
             });
         }

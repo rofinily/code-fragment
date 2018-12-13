@@ -5,5 +5,8 @@ package me.anchore.log;
  * @date 2018/10/9
  */
 public interface Logger {
+
+    void info(Throwable t);
+
     void error(Throwable t);
 }

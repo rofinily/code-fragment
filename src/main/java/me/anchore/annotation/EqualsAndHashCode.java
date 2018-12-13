@@ -21,8 +21,6 @@ import java.util.stream.Collectors;
 @Target(ElementType.FIELD)
 public @interface EqualsAndHashCode {
 
-    boolean ignore() default false;
-
     class Builder {
         public static boolean equals(Object o1, Object o2) {
             if (o1 == o2) {
@@ -54,16 +52,16 @@ public @interface EqualsAndHashCode {
             if (o == null) {
                 return hash;
             }
-            return getAllFields(o.getClass()).stream().mapToInt(field -> {
+            Object[] objects = getAllFields(o.getClass()).stream().map(field -> {
                 try {
                     field.setAccessible(true);
-                    Object f = field.get(o);
-                    return f == null ? 0 : f.hashCode();
+                    return field.get(o);
                 } catch (IllegalAccessException e) {
                     Loggers.getLogger().error(e);
-                    return 0;
+                    return null;
                 }
-            }).reduce(hash, (a, b) -> 31 * a + b);
+            }).toArray();
+            return Arrays.hashCode(objects);
         }
 
         private static List<Field> getAllFields(Class<?> cls) {
@@ -71,9 +69,9 @@ public @interface EqualsAndHashCode {
             if (cls.getSuperclass() != null) {
                 fields.addAll(getAllFields(cls.getSuperclass()));
             }
-            fields.addAll(Arrays.stream(cls.getDeclaredFields()).
-                    filter(field -> field.isAnnotationPresent(EqualsAndHashCode.class)).
-                    filter(field -> !field.getDeclaredAnnotation(EqualsAndHashCode.class).ignore()).collect(Collectors.toList()));
+            fields.addAll(Arrays.stream(cls.getDeclaredFields())
+                    .filter(field -> field.isAnnotationPresent(EqualsAndHashCode.class))
+                    .collect(Collectors.toList()));
             return fields;
         }
     }

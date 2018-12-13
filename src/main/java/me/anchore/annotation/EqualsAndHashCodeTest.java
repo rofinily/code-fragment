@@ -3,6 +3,8 @@ package me.anchore.annotation;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 /**
  * @author anchore
  * @date 2018/10/10
@@ -41,7 +43,6 @@ public class EqualsAndHashCodeTest {
 
         double d;
 
-        @EqualsAndHashCode(ignore = true)
         char c;
 
         public A(long l, double d, char c) {
@@ -66,7 +67,7 @@ public class EqualsAndHashCodeTest {
 
         @Override
         public int hashCode() {
-            return (int) (l ^ (l >>> 32));
+            return Arrays.hashCode(new Object[]{l});
         }
     }
 
