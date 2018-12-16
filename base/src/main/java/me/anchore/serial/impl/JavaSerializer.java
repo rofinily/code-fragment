@@ -1,6 +1,6 @@
 package me.anchore.serial.impl;
 
-import me.anchore.log.Loggers;
+import me.anchore.serial.SerializeException;
 import me.anchore.serial.Serializer;
 import me.anchore.util.Assert;
 
@@ -18,26 +18,25 @@ import java.io.Serializable;
 public class JavaSerializer implements Serializer {
 
     @Override
-    public <T> void serialize(T t, OutputStream out) {
+    public <T> void serialize(T t, OutputStream out) throws SerializeException {
         Assert.notNull(out);
         Assert.isInstanceOf(Serializable.class, t);
 
         try (ObjectOutputStream objOut = new ObjectOutputStream(out)) {
             objOut.writeObject(t);
         } catch (IOException e) {
-            Loggers.getLogger().error(e);
+            throw new SerializeException(e);
         }
     }
 
     @Override
-    public <T> T deserialize(InputStream in) {
+    public <T> T deserialize(InputStream in) throws SerializeException {
         Assert.notNull(in);
 
         try (ObjectInputStream objIn = new ObjectInputStream(in)) {
             return (T) objIn.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            Loggers.getLogger().error(e);
-            return null;
+            throw new SerializeException(e);
         }
     }
 }

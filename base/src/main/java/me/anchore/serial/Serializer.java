@@ -9,7 +9,7 @@ import java.io.OutputStream;
  */
 public interface Serializer {
 
-    <T> void serialize(T t, OutputStream out);
+    <T> void serialize(T t, OutputStream out) throws SerializeException;
 
-    <T> T deserialize(InputStream in);
+    <T> T deserialize(InputStream in) throws SerializeException;
 }

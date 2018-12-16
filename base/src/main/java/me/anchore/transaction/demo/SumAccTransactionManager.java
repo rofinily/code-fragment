@@ -1,7 +1,7 @@
 package me.anchore.transaction.demo;
 
 import me.anchore.transaction.Transaction;
-import me.anchore.transaction.TransactionInterceptor;
+import me.anchore.transaction.TransactionHandler;
 import me.anchore.transaction.TransactionManager;
 import me.anchore.transaction.TransactionProxy;
 
@@ -11,22 +11,41 @@ import me.anchore.transaction.TransactionProxy;
  */
 public class SumAccTransactionManager implements TransactionManager<SumAccumulator> {
     public static void main(String[] args) {
-        SumAccumulator sumAcc = new SumAccumulator();
-        SumAccumulator proxy = new TransactionProxy(new TransactionInterceptor(sumAcc, new SumAccTransactionManager().getTransaction(sumAcc))).proxy(SumAccumulator.class);
-        proxy.accumulate(100);
-        proxy.accumulate(100);
-        proxy.accumulate(100);
-        System.out.println(sumAcc.sum);
+        SumAccumulator proxyee = new SumAccumulator() {
+
+            int sum;
+
+            @Override
+            public int getSum() {
+                return sum;
+            }
+
+            @Override
+            public void setSum(int sum) {
+                this.sum = sum;
+            }
+
+            @Override
+            public void accumulate(int i) {
+                throw new RuntimeException();
+            }
+        };
+        SumAccumulator sumAcc = new TransactionProxy(new TransactionHandler(proxyee, new SumAccTransactionManager().getTransaction(proxyee))).proxy(SumAccumulator.class);
+        sumAcc.accumulate(100);
+        sumAcc.accumulate(100);
+        sumAcc.accumulate(100);
+        System.out.println(sumAcc.getSum());
     }
 
     @Override
-    public Transaction getTransaction(SumAccumulator old) {
+    public Transaction getTransaction(SumAccumulator attach) {
         return new Transaction() {
+
             int oldSum;
 
             @Override
             public void begin() {
-                oldSum = old.sum;
+                oldSum = attach.getSum();
             }
 
             @Override
@@ -35,7 +54,12 @@ public class SumAccTransactionManager implements TransactionManager<SumAccumulat
 
             @Override
             public void rollback() {
-                old.sum = oldSum;
+                attach.setSum(oldSum);
+            }
+
+            @Override
+            public void close() {
+
             }
         };
     }

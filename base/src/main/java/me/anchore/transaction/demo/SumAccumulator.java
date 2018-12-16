@@ -2,20 +2,16 @@ package me.anchore.transaction.demo;
 
 import me.anchore.transaction.Transactional;
 
-import java.util.Random;
-
 /**
  * @author anchore
  * @date 2018/8/19
  */
-public class SumAccumulator {
-    int sum = -1;
+public interface SumAccumulator {
+
+    int getSum();
+
+    void setSum(int sum);
 
     @Transactional
-    public void accumulate(int i) {
-        sum += i;
-        if (new Random(hashCode()).nextBoolean()) {
-            throw new RuntimeException();
-        }
-    }
+    void accumulate(int i);
 }

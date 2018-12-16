@@ -17,6 +17,6 @@ public class TransactionProxy implements Proxy {
     @Override
     public <T> T proxy(Class<T> proxyee) {
         Object proxy = java.lang.reflect.Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{proxyee}, handler);
-        return (T) proxy;
+        return proxyee.cast(proxy);
     }
 }

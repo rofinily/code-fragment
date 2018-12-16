@@ -14,7 +14,7 @@ import java.io.ByteArrayOutputStream;
 public class SerializerTest {
 
     @Test
-    public void testSerialize() {
+    public void testSerialize() throws SerializeException {
         Serializer serializer = new JavaSerializer();
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         Object oldObj = "anchore";

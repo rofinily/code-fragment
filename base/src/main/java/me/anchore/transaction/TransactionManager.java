@@ -6,5 +6,5 @@ package me.anchore.transaction;
  */
 public interface TransactionManager<T> {
 
-    Transaction getTransaction(T old);
+    Transaction getTransaction(T attach);
 }

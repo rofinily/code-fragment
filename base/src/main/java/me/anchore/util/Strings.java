@@ -133,4 +133,10 @@ public final class Strings {
         }
         return result;
     }
+
+    public static String format(String pattern, Object... args) {
+        // todo 占位符
+        StringBuilder sb = new StringBuilder();
+        return null;
+    }
 }

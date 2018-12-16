@@ -7,13 +7,13 @@ import java.lang.reflect.Method;
  * @author anchore
  * @date 2018/8/19
  */
-public class TransactionInterceptor implements InvocationHandler {
+public class TransactionHandler implements InvocationHandler {
 
     private Object proxyee;
 
     private Transaction tx;
 
-    public TransactionInterceptor(Object proxyee, Transaction tx) {
+    public TransactionHandler(Object proxyee, Transaction tx) {
         this.proxyee = proxyee;
         this.tx = tx;
     }
@@ -21,12 +21,12 @@ public class TransactionInterceptor implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (method.isAnnotationPresent(Transactional.class)) {
-            return interceptTx(method, args);
+            return doTransaction(method, args);
         }
         return method.invoke(proxyee, args);
     }
 
-    private Object interceptTx(Method method, Object[] args) throws Throwable {
+    private Object doTransaction(Method method, Object[] args) throws Throwable {
         try {
             tx.begin();
 
@@ -38,9 +38,10 @@ public class TransactionInterceptor implements InvocationHandler {
         } catch (Throwable t) {
             if (interceptThrowable(t, method.getDeclaredAnnotation(Transactional.class))) {
                 tx.rollback();
-                return null;
             }
             throw t;
+        } finally {
+            tx.close();
         }
     }
 
