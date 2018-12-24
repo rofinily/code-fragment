@@ -1,4 +1,4 @@
-package me.anchore.util.json.annotation;
+package me.anchore.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,9 +7,9 @@ import java.lang.annotation.Target;
 
 /**
  * @author anchore
- * @date 2018/12/16
+ * @date 2018/9/1
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
-public @interface JsonIgnore {
+public @interface IgnoreEqAndHash {
 }

@@ -1,7 +1,7 @@
 package me.anchore.util.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import me.anchore.util.json.annotation.JsonIgnore;
+import me.anchore.util.json.annotation.IgnoreJson;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,7 +22,7 @@ public class JsonUtilTest {
     public void testStringify() throws JsonException, JsonProcessingException {
 
         Assert.assertEquals(
-                "{\"l\":1,\"strings\":[\"1\",\"2\"],\"map\":{\"key1\":{},\"key2\":\"value2\",\"key3\":3},\"numbers\":[2,3],\"s\":\"str\"}",
+                "{\"l\":1,\"strings\":[\"1\",\"2\"],\"map\":{\"key1\":{},\"key2\":\"value2\",\"key3\":3},\"numbers\":[2,3],\"singleton\":false,\"s\":\"str\"}",
                 JsonUtil.stringify(new B()));
     }
 
@@ -49,7 +49,7 @@ class A {
 
     transient char c = 't';
 
-    @JsonIgnore
+    @IgnoreJson
     Set<?> set = Collections.singleton("ignore");
 
     public Number[] getNumbers() {
@@ -57,6 +57,10 @@ class A {
     }
 
     public void getA() {
+    }
+
+    boolean isSingleton() {
+        return false;
     }
 }
 

@@ -1,6 +1,6 @@
 package me.anchore.util;
 
-import me.anchore.annotation.EqualsAndHashCode;
+import me.anchore.annotation.EqAndHashBuilder;
 
 import java.util.Map.Entry;
 
@@ -42,12 +42,12 @@ public class Pair<K, V> implements Entry<K, V> {
 
     @Override
     public boolean equals(Object o) {
-        return EqualsAndHashCode.Builder.equals(this, o);
+        return EqAndHashBuilder.equals(this, o);
     }
 
     @Override
     public int hashCode() {
-        return EqualsAndHashCode.Builder.hashCode(this);
+        return EqAndHashBuilder.hashCode(this);
     }
 
     @Override

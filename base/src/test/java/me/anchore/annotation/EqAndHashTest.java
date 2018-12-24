@@ -9,7 +9,7 @@ import java.util.Arrays;
  * @author anchore
  * @date 2018/10/10
  */
-public class EqualsAndHashCodeTest {
+public class EqAndHashTest {
 
     @Test
     public void testEqualsAndHashCode() {
@@ -17,32 +17,33 @@ public class EqualsAndHashCodeTest {
         A a2 = new A(1, -2, '3');
         A a3 = new A(2, -1, '2');
 
-        Assert.assertEquals(a1.equals(a2), EqualsAndHashCode.Builder.equals(a1, a2));
-        Assert.assertEquals(a1.equals(a3), EqualsAndHashCode.Builder.equals(a1, a3));
+        Assert.assertEquals(a1.equals(a2), EqAndHashBuilder.equals(a1, a2));
+        Assert.assertEquals(a1.equals(a3), EqAndHashBuilder.equals(a1, a3));
 
-        Assert.assertEquals(a1.hashCode(), EqualsAndHashCode.Builder.hashCode(a1));
-        Assert.assertEquals(a2.hashCode(), EqualsAndHashCode.Builder.hashCode(a2));
-        Assert.assertEquals(a3.hashCode(), EqualsAndHashCode.Builder.hashCode(a3));
+        Assert.assertEquals(a1.hashCode(), EqAndHashBuilder.hashCode(a1));
+        Assert.assertEquals(a2.hashCode(), EqAndHashBuilder.hashCode(a2));
+        Assert.assertEquals(a3.hashCode(), EqAndHashBuilder.hashCode(a3));
 
 
         B b1 = new B(1, -1, '2', 10, "asdf");
         B b2 = new B(1, -2, '3', 10, "asdf");
         B b3 = new B(1, -9, '2', 100, "asdf");
 
-        Assert.assertEquals(b1.equals(b2), EqualsAndHashCode.Builder.equals(b1, b2));
-        Assert.assertEquals(b1.equals(b3), EqualsAndHashCode.Builder.equals(b1, b3));
+        Assert.assertEquals(b1.equals(b2), EqAndHashBuilder.equals(b1, b2));
+        Assert.assertEquals(b1.equals(b3), EqAndHashBuilder.equals(b1, b3));
 
-        Assert.assertEquals(b1.hashCode(), EqualsAndHashCode.Builder.hashCode(b1));
-        Assert.assertEquals(b2.hashCode(), EqualsAndHashCode.Builder.hashCode(b2));
-        Assert.assertEquals(b3.hashCode(), EqualsAndHashCode.Builder.hashCode(b3));
+        Assert.assertEquals(b1.hashCode(), EqAndHashBuilder.hashCode(b1));
+        Assert.assertEquals(b2.hashCode(), EqAndHashBuilder.hashCode(b2));
+        Assert.assertEquals(b3.hashCode(), EqAndHashBuilder.hashCode(b3));
     }
 
     class A {
-        @EqualsAndHashCode
         long l;
 
+        @IgnoreEqAndHash
         double d;
 
+        @IgnoreEqAndHash
         char c;
 
         public A(long l, double d, char c) {
@@ -72,10 +73,8 @@ public class EqualsAndHashCodeTest {
     }
 
     class B extends A {
-        @EqualsAndHashCode
         int i;
 
-        @EqualsAndHashCode
         String s;
 
         public B(long l, double d, char c, int i, String s) {

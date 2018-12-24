@@ -33,7 +33,7 @@ public class JsonSerializer implements Serializer {
         try (InputStreamReader reader = new InputStreamReader(in)) {
             CharBuffer charBuffer = CharBuffer.allocate(in.available());
             reader.read(charBuffer);
-            return JsonUtil.parse(charBuffer.toString());
+            return JsonUtil.parse(charBuffer.toString(), null);
         } catch (IOException | JsonException e) {
             throw new SerializeException(e);
         }
