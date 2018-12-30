@@ -1,6 +1,5 @@
 package me.anchore.util.json;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import me.anchore.util.json.annotation.IgnoreJson;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +18,7 @@ import java.util.Set;
 public class JsonUtilTest {
 
     @Test
-    public void testStringify() throws JsonException, JsonProcessingException {
+    public void testStringify() throws JsonException {
 
         Assert.assertEquals(
                 "{\"l\":1,\"strings\":[\"1\",\"2\"],\"map\":{\"key1\":{},\"key2\":\"value2\",\"key3\":3},\"numbers\":[2,3],\"singleton\":false,\"s\":\"str\"}",
