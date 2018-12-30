@@ -1,9 +1,17 @@
 package me.anchore.util;
 
+import java.util.function.Consumer;
+
 /**
  * @author anchore
  */
 public final class Util {
+
+    public static <T> void ifPresent(T t, Consumer<T> consumer) {
+        if (t != null) {
+            consumer.accept(t);
+        }
+    }
 
     public static int hashCode(Object o) {
         return o == null ? 0 : o.hashCode();

@@ -1,4 +1,6 @@
-package me.anchore.util;
+package me.anchore.test;
+
+import me.anchore.util.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;

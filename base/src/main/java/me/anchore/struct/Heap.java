@@ -1,12 +1,15 @@
 package me.anchore.struct;
 
-import me.anchore.util.DataSetUtil;
 import me.anchore.util.Sort;
 
 import java.util.Arrays;
 
+/**
+ * @author anchore
+ */
 public class Heap {
-    private int[] a = DataSetUtil.getIntArray(100);
+
+    private int[] a;
     private Type type = Type.MAX_TOP;
 
     public static void main(String[] args) {

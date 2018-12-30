@@ -1,6 +1,6 @@
 package me.anchore.snippet.algorithm;
 
-import me.anchore.util.DataSetUtil;
+import me.anchore.test.DataSetUtil;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
