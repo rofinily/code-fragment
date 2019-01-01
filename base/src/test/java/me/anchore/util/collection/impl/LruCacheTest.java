@@ -2,6 +2,7 @@ package me.anchore.util.collection.impl;
 
 import me.anchore.util.collection.Cache;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -13,8 +14,9 @@ import java.util.Map.Entry;
  */
 public class LruCacheTest {
 
+    @Ignore
     @Test
-    void test() {
+    public void test() {
         Cache<Integer, Integer> cache = new LruCache<>(3);
         cache.put(1, 1);
         cache.put(2, 2);

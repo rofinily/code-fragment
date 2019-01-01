@@ -7,7 +7,6 @@ import java.security.PrivilegedExceptionAction;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -16,20 +15,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class created on 2018/6/15
- *
- * @author Lucifer
- * @descriptio swift thread executors
- * @since Advanced FineBI 5.0
+ * @author anchore
  */
-public class SwiftExecutors {
+public class Execs {
 
-    private final static Set<ExecutorService> EXECUTORS = new ConcurrentSkipListSet<>();
+    private final static Set<ExecutorService> EXECUTORS = new ConcurrentHashSet<>();
 
-    private final static Set<Thread> THREADS = new ConcurrentSkipListSet<>();
+    private final static Set<Thread> THREADS = new ConcurrentHashSet<>();
 
     public static ExecutorService newFixedThreadPool(int nThreads) {
-        return newFixedThreadPool(nThreads, new PoolThreadFactory(SwiftExecutors.class));
+        return newFixedThreadPool(nThreads, new PoolThreadFactory(Execs.class));
     }
 
     public static ExecutorService newFixedThreadPool(int nThreads, ThreadFactory threadFactory) {
@@ -39,7 +34,7 @@ public class SwiftExecutors {
     }
 
     public static ExecutorService newSingleThreadExecutor() {
-        return newSingleThreadExecutor(new PoolThreadFactory(SwiftExecutors.class));
+        return newSingleThreadExecutor(new PoolThreadFactory(Execs.class));
     }
 
     private static ExecutorService newSingleThreadExecutor(ThreadFactory threadFactory) {
@@ -49,7 +44,7 @@ public class SwiftExecutors {
     }
 
     public static ExecutorService newCachedThreadPool() {
-        return newCachedThreadPool(new PoolThreadFactory(SwiftExecutors.class));
+        return newCachedThreadPool(new PoolThreadFactory(Execs.class));
     }
 
     private static ExecutorService newCachedThreadPool(ThreadFactory threadFactory) {
@@ -59,7 +54,7 @@ public class SwiftExecutors {
     }
 
     public static ScheduledExecutorService newSingleThreadScheduledExecutor() {
-        return newSingleThreadScheduledExecutor(new PoolThreadFactory(SwiftExecutors.class));
+        return newSingleThreadScheduledExecutor(new PoolThreadFactory(Execs.class));
     }
 
     private static ScheduledExecutorService newSingleThreadScheduledExecutor(ThreadFactory threadFactory) {
@@ -69,7 +64,7 @@ public class SwiftExecutors {
     }
 
     public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize) {
-        return newScheduledThreadPool(corePoolSize, new PoolThreadFactory(SwiftExecutors.class));
+        return newScheduledThreadPool(corePoolSize, new PoolThreadFactory(Execs.class));
     }
 
     private static ScheduledExecutorService newScheduledThreadPool(int corePoolSize, ThreadFactory threadFactory) {
@@ -82,7 +77,6 @@ public class SwiftExecutors {
                                                         long keepAliveTime, TimeUnit unit,
                                                         BlockingQueue<Runnable> workQueue,
                                                         ThreadFactory threadFactory) {
-
         ThreadPoolExecutor executor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize,
                 keepAliveTime, unit,
                 workQueue,
@@ -97,7 +91,7 @@ public class SwiftExecutors {
     }
 
     private static Thread newThread(Runnable runnable, String name) {
-        return newThread(null, runnable, name, 0);
+        return newThread(BaseThreadFactory.THREAD_GROUP, runnable, name, 0);
     }
 
     private static Thread newThread(ThreadGroup group, Runnable target, String name, long stackSize) {

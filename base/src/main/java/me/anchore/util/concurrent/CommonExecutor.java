@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 public class CommonExecutor {
 
     private static final CommonExecutor INSTANCE = new CommonExecutor();
-    private ExecutorService exec = SwiftExecutors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new PoolThreadFactory(getClass()));
+    private ExecutorService exec = Execs.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), new PoolThreadFactory(getClass()));
 
     private CommonExecutor() {
     }

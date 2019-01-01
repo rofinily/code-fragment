@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 abstract class BaseThreadFactory implements ThreadFactory {
 
-    private static final ThreadGroup THREAD_GROUP = new ThreadGroup("SwiftThreads");
+    static final ThreadGroup THREAD_GROUP = new ThreadGroup("AnchoreThreads");
 
     private final AtomicInteger threadNumber = new AtomicInteger(1);
 

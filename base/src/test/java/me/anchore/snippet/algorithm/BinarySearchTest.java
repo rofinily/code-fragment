@@ -54,6 +54,7 @@ public class BinarySearchTest {
         assertEquals(i, BinarySearch.search(a, 0, a.length - 1, a[i], Sort.Type.ASC));
     }
 
+    @Ignore
     @Test
     public void testMultiBinarySearch() {
         int[] idx = r.ints(10, 0, a.length).distinct().toArray();

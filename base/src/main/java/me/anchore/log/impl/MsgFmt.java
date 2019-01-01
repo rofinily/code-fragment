@@ -1,6 +1,6 @@
 package me.anchore.log.impl;
 
-import me.anchore.util.Assert;
+import me.anchore.util.Checker;
 import me.anchore.util.Pair;
 
 import java.util.Optional;
@@ -12,7 +12,9 @@ import java.util.Optional;
 class MsgFmt {
 
     static Pair<String, Optional<Throwable>> format(String msg, Object... args) {
-        Assert.notEmpty(args);
+        if (Checker.isEmpty(args)) {
+            return Pair.of(msg, Optional.empty());
+        }
 
         boolean hasThrowable = false;
         if (args[args.length - 1] instanceof Throwable) {

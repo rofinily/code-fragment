@@ -2,6 +2,7 @@ package me.anchore.snippet.algorithm;
 
 import me.anchore.test.DataSetUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -18,6 +19,7 @@ public class FinderTest {
         f = new Finder(a);
     }
 
+    @Ignore
     @Test
     public void testFindMth2Nth() {
         int m = a.length / 10,
@@ -27,6 +29,7 @@ public class FinderTest {
         assertTrue(checkResult(a, m, n));
     }
 
+    @Ignore
     @Test
     public void testFindKth() {
         int k = a.length / 2;
