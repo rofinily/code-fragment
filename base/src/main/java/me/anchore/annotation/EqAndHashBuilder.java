@@ -1,5 +1,7 @@
 package me.anchore.annotation;
 
+import me.anchore.util.Checker;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +30,13 @@ public class EqAndHashBuilder {
 
         List<Object> props1 = objProps.propStream().map(prop -> prop.getValue(o1)).collect(Collectors.toList());
         List<Object> props2 = objProps.propStream().map(prop -> prop.getValue(o2)).collect(Collectors.toList());
-        return props1.containsAll(props2);
+
+        for (int i = 0; i < props1.size(); i++) {
+            if (!Checker.equals(props1.get(i), props2.get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static int hashCode(Object o) {

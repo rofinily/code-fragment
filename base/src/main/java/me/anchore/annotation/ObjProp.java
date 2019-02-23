@@ -5,8 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 /**
  * @author anchore
@@ -20,14 +20,16 @@ public class ObjProp {
 
     private String name;
 
-    private Function<Object, Object> value;
+    private UnaryOperator<Object> value;
 
     private Annotation[] annotations;
 
     public ObjProp(Field field) {
         this(field.getModifiers(), field.getName(), o -> {
             try {
-                field.setAccessible(true);
+                if (!field.isAccessible()) {
+                    field.setAccessible(true);
+                }
                 return field.get(o);
             } catch (Exception e) {
                 return null;
@@ -38,7 +40,9 @@ public class ObjProp {
     public ObjProp(Method method) {
         this(method.getModifiers(), extractPropName(method), o -> {
             try {
-                method.setAccessible(true);
+                if (!method.isAccessible()) {
+                    method.setAccessible(true);
+                }
                 return method.invoke(o);
             } catch (Exception e) {
                 return null;
@@ -46,7 +50,7 @@ public class ObjProp {
         }, method.getDeclaredAnnotations());
     }
 
-    public ObjProp(int modifiers, String name, Function<Object, Object> value, Annotation[] annotations) {
+    public ObjProp(int modifiers, String name, UnaryOperator<Object> value, Annotation[] annotations) {
         this.modifiers = modifiers;
         this.name = name;
         this.value = value;

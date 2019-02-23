@@ -33,7 +33,7 @@ public class ObjProps {
 
         props.addAll(Arrays.stream(c.getDeclaredFields())
                 .filter(field -> !Modifier.isStatic(field.getModifiers()))
-                .filter(field -> !field.getName().startsWith("this$"))
+                .filter(field -> !field.isSynthetic())
                 .map(ObjProp::new)
                 .filter(propFilter)
                 .collect(Collectors.toList()));
