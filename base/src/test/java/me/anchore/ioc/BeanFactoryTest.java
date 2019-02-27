@@ -1,6 +1,8 @@
 package me.anchore.ioc;
 
+import me.anchore.ioc.impl.Beans;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author anchore
@@ -12,37 +14,42 @@ public class BeanFactoryTest {
     public void setUp() throws Exception {
     }
 
-    @Bean
-    class D {
-        @Inject
-        A a;
-        @Inject
-        B b;
-        @Inject
-        C c;
+    @Test
+    public void test() {
+        Beans.get();
     }
+}
 
-    @Bean
-    class B {
-    }
+@Bean
+class D {
+    @Inject
+    A a;
+    @Inject
+    B b;
+    @Inject
+    C c;
+}
 
-    @Bean
-    class C {
-        @Inject
-        A c;
-    }
+@Bean
+class B {
+}
 
-    @Bean
-    class A {
-        @Inject
-        B b;
-    }
+@Bean
+class C {
+    @Inject
+    A c;
+}
 
-    @Bean
-    class E {
-        @Inject
-        B b;
-        @Inject
-        D d;
-    }
+@Bean
+class A {
+    @Inject
+    B b;
+}
+
+@Bean
+class E {
+    @Inject
+    B b;
+    @Inject
+    D d;
 }

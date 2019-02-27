@@ -1,23 +1,24 @@
 package me.anchore.ioc.impl;
 
+import jdk.internal.org.objectweb.asm.ClassReader;
 import me.anchore.ioc.Bean;
+import me.anchore.ioc.BeanException;
 import me.anchore.ioc.BeanScanner;
 import me.anchore.ioc.DuplicateBeanException;
 import me.anchore.log.Loggers;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.stream.Collectors;
 
 /**
  * @author anchore
@@ -38,9 +39,9 @@ public class ClassPathBeanScanner implements BeanScanner {
                 URL url = urls.nextElement();
                 String protocol = url.getProtocol();
                 if ("jar".equals(protocol)) {
-                    beanInfos.addAll(ofJar(url.getFile()));
+                    beanInfos.addAll(ofJar(new URL(url.getFile()).getPath()));
                 } else if ("file".equals(protocol)) {
-                    beanInfos.addAll(ofClassFile(new File(url.getFile()).getPath(), packageName));
+                    beanInfos.addAll(ofClassFile(new File(url.getFile()).getPath()));
                 }
             }
         } catch (IOException e) {
@@ -49,29 +50,30 @@ public class ClassPathBeanScanner implements BeanScanner {
         return beanInfos;
     }
 
-    private Set<BeanInfo> ofClassFile(String path, String packageName) throws IOException {
-        return Files.walk(Paths.get(path))
+    private Set<BeanInfo> ofClassFile(String path) throws IOException {
+        return Files.walk(new File(path).toPath())
                 .filter(Files::isRegularFile)
                 .map(Path::toString)
                 .filter(s -> s.endsWith(CLASS_FILE_SUFFIX))
-                .map(s -> s.substring(path.length() - packageName.length(), s.length() - CLASS_FILE_SUFFIX.length()))
-                .map(s -> s.replace(File.separatorChar, '.'))
-                .map(className -> {
+                .map(p -> {
                     try {
-                        return Class.forName(className);
-                    } catch (ClassNotFoundException e) {
-                        return null;
+                        return getClassInfoInClassFile(p);
+                    } catch (IOException e) {
+                        throw new BeanException(e);
                     }
                 })
-                .filter(Objects::nonNull)
-                .filter(c -> c.isAnnotationPresent(Bean.class))
-                .map(Class::getName)
-                .map(BeanInfo::ofClassName)
-                .collect(Collectors.toSet());
+                .reduce(new HashSet<>(), (beanInfos, classInfo) -> {
+                    addBeanInfo(classInfo, beanInfos);
+                    return beanInfos;
+                }, (c1, c2) -> {
+                    c1.addAll(c2);
+                    return c1;
+                });
+
     }
 
     private Set<BeanInfo> ofJar(String path) throws IOException {
-        Set<BeanInfo> classes = new HashSet<>();
+        Set<BeanInfo> beanInfos = new HashSet<>();
         String jarPath = path.substring(0, path.indexOf(JAR_FILE_SUFFIX + "!/") + JAR_FILE_SUFFIX.length());
         try (JarFile jar = new JarFile(jarPath)) {
             Enumeration<JarEntry> entries = jar.entries();
@@ -81,21 +83,37 @@ public class ClassPathBeanScanner implements BeanScanner {
                 if (entry.isDirectory() || !entryName.endsWith(CLASS_FILE_SUFFIX)) {
                     continue;
                 }
-                try {
-                    Class<?> c = Class.forName(entryName.replace('/', '.').substring(0, entryName.length() - CLASS_FILE_SUFFIX.length()));
-                    Bean bean = c.getAnnotation(Bean.class);
-                    if (bean != null) {
-                        String beanId = bean.value();
-                        if (!classes.add(new BeanInfo("".equals(beanId) ? c.getName() : beanId, c.getName()))) {
-                            throw DuplicateBeanException.ofBeanId(beanId);
-                        }
-                    }
-                } catch (ClassNotFoundException e) {
-                    Loggers.getLogger().error(e);
-                }
+                ClassInfo classInfo = getClassInfoInJar(jar, entry);
+                addBeanInfo(classInfo, beanInfos);
             }
         }
 
-        return classes;
+        return beanInfos;
+    }
+
+    private static ClassInfo getClassInfoInClassFile(String path) throws IOException {
+        try (InputStream input = new FileInputStream(path)) {
+            ClassInfoVisitor classInfoVisitor = new ClassInfoVisitor();
+            new ClassReader(input).accept(classInfoVisitor, ClassReader.SKIP_CODE);
+            return classInfoVisitor.getClassInfo();
+        }
+    }
+
+    private ClassInfo getClassInfoInJar(JarFile jar, JarEntry entry) throws IOException {
+        try (InputStream input = jar.getInputStream(entry)) {
+            ClassInfoVisitor classInfoVisitor = new ClassInfoVisitor();
+            new ClassReader(input).accept(classInfoVisitor, ClassReader.SKIP_CODE);
+            return classInfoVisitor.getClassInfo();
+        }
+    }
+
+    private void addBeanInfo(ClassInfo classInfo, Set<BeanInfo> beanInfos) {
+        AnnotationInfo bean = classInfo.getAnnotationInfo(Bean.class);
+        if (bean != null) {
+            String beanId = bean.getProperty("value");
+            if (!beanInfos.add(new BeanInfo("".equals(beanId) ? classInfo.getName() : beanId, classInfo))) {
+                throw DuplicateBeanException.ofBeanId(beanId);
+            }
+        }
     }
 }

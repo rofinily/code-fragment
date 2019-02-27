@@ -2,6 +2,7 @@ package me.anchore.ioc.impl;
 
 import me.anchore.ioc.BeanException;
 import me.anchore.ioc.BeanFactory;
+import me.anchore.ioc.BeanNotFoundException;
 import me.anchore.ioc.BeanScanner;
 import me.anchore.ioc.Inject;
 import me.anchore.ioc.impl.DirectedAcyclicGraph.Node;
@@ -9,11 +10,12 @@ import me.anchore.log.Loggers;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author anchore
@@ -23,16 +25,14 @@ public class Beans implements BeanFactory {
 
     private Map<String, Object> idToBean = new HashMap<>();
 
-    private Map<Class<?>, Object> classToBean = new HashMap<>();
-
     private BeanScanner beanScanner = new ClassPathBeanScanner();
 
     @Override
     public <T> T getBean(Class<T> c) throws BeanException {
-        if (!classToBean.containsKey(c)) {
+        if (!idToBean.containsKey(c.getName())) {
             throw new BeanException(String.format("no such bean of type %s", c.getName()));
         }
-        return (T) classToBean.get(c);
+        return (T) idToBean.get(c.getName());
     }
 
     @Override
@@ -56,64 +56,71 @@ public class Beans implements BeanFactory {
     }
 
     private void init() {
-        Map<Class<?>, Node<Class<?>>> nodes = new HashMap<>();
-
+        Map<ClassInfo, Node<ClassInfo>> nodes = new HashMap<>();
         scanBeanInfo(nodes);
         initBean(nodes);
     }
 
-    private void scanBeanInfo(Map<Class<?>, Node<Class<?>>> nodes) {
-        beanScanner.scan("me.anchore").stream().map(BeanInfo::getClassName)
-                .map(className -> {
-                    try {
-                        return Class.forName(className);
-                    } catch (ClassNotFoundException e) {
-                        return null;
+    private void scanBeanInfo(Map<ClassInfo, Node<ClassInfo>> nodes) {
+        Set<BeanInfo> beanInfos = beanScanner.scan("me.anchore.ioc");
+        for (BeanInfo beanInfo : beanInfos) {
+            ClassInfo classInfo = beanInfo.getClassInfo();
+            if (!nodes.containsKey(classInfo)) {
+                nodes.put(classInfo, new Node<>(classInfo));
+            }
+            for (FieldInfo f : classInfo.getFieldInfos()) {
+                if (f.isAnnotationPresent(Inject.class)) {
+                    ClassInfo fieldClassInfo = findClassInfo(f.getTypeName(), beanInfos);
+                    if (!nodes.containsKey(fieldClassInfo)) {
+                        nodes.put(fieldClassInfo, new Node<>(fieldClassInfo));
                     }
-                }).filter(Objects::nonNull)
-                .forEach(c -> {
-                    if (!nodes.containsKey(c)) {
-                        nodes.put(c, new Node<>(c));
-                    }
-                    for (Field f : c.getDeclaredFields()) {
-                        if (f.isAnnotationPresent(Inject.class)) {
-                            Class<?> fieldClass = f.getType();
-                            if (!nodes.containsKey(fieldClass)) {
-                                nodes.put(fieldClass, new Node<>(fieldClass));
-                            }
-                            nodes.get(c).addSource(nodes.get(fieldClass));
-                        }
-                    }
-                });
+                    nodes.get(classInfo).addSource(nodes.get(fieldClassInfo));
+                }
+            }
+        }
     }
 
-    private void initBean(Map<Class<?>, Node<Class<?>>> nodes) {
+    private ClassInfo findClassInfo(String typeName, Set<BeanInfo> beanInfos) {
+        for (BeanInfo beanInfo : beanInfos) {
+            ClassInfo classInfo = beanInfo.getClassInfo();
+            if (typeName.equals(classInfo.getName())) {
+                return classInfo;
+            }
+        }
+        throw BeanNotFoundException.ofType(typeName);
+    }
+
+    private void initBean(Map<ClassInfo, Node<ClassInfo>> nodes) {
         new DirectedAcyclicGraph<>(new HashSet<>(nodes.values())).topoSort(node -> {
             try {
-                Object instance = node.getKey().newInstance();
-                classToBean.put(node.getKey(), instance);
+                ClassInfo classInfo = node.getKey();
+                Class<?> c = Class.forName(classInfo.getName());
+                Constructor<?> constructor = c.getDeclaredConstructor();
+                if (!constructor.isAccessible()) {
+                    constructor.setAccessible(true);
+                }
+                Object instance = constructor.newInstance();
+                idToBean.put(classInfo.getName(), instance);
 
-                for (Field f : node.getKey().getDeclaredFields()) {
-                    if (f.isAnnotationPresent(Inject.class)) {
-                        if (!f.isAccessible()) {
-                            f.setAccessible(true);
+                for (FieldInfo fieldInfo : classInfo.getFieldInfos()) {
+                    if (fieldInfo.isAnnotationPresent(Inject.class)) {
+                        Field field = c.getDeclaredField(fieldInfo.getName());
+                        if (!field.isAccessible()) {
+                            field.setAccessible(true);
                         }
-                        f.set(instance, classToBean.get(f.getType()));
+                        field.set(instance, idToBean.get(fieldInfo.getTypeName()));
                     }
                 }
-            } catch (InstantiationException | IllegalAccessException e) {
+            } catch (IllegalAccessException | ClassNotFoundException | NoSuchFieldException | NoSuchMethodException | InstantiationException | InvocationTargetException e) {
                 Loggers.getLogger().error(e);
             }
         });
     }
 
-    public static void main(String[] args) throws Exception {
-        Beans.get().init();
-    }
-
     private static final Beans INSTANCE = new Beans();
 
     private Beans() {
+        init();
     }
 
     public static Beans get() {

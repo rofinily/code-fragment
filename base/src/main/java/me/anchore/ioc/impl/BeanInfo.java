@@ -1,8 +1,6 @@
 package me.anchore.ioc.impl;
 
 import me.anchore.annotation.EqAndHashBuilder;
-import me.anchore.annotation.ToStringBuilder;
-import me.anchore.util.json.JsonException;
 
 /**
  * @author anchore
@@ -12,23 +10,23 @@ public class BeanInfo {
 
     private String id;
 
-    private String className;
+    private ClassInfo classInfo;
 
-    public BeanInfo(String id, String className) {
-        this.id = id;
-        this.className = className;
+    public BeanInfo(ClassInfo classInfo) {
+        this(classInfo.getName(), classInfo);
     }
 
-    static BeanInfo ofClassName(String className) {
-        return new BeanInfo(className, className);
+    public BeanInfo(String id, ClassInfo classInfo) {
+        this.id = id;
+        this.classInfo = classInfo;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getClassName() {
-        return className;
+    public ClassInfo getClassInfo() {
+        return classInfo;
     }
 
     @Override
@@ -39,18 +37,5 @@ public class BeanInfo {
     @Override
     public boolean equals(Object obj) {
         return EqAndHashBuilder.equals(this, obj);
-    }
-
-    @Override
-    public String toString() {
-        try {
-            return ToStringBuilder.toString(this);
-        } catch (JsonException e) {
-            return "";
-        }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new BeanInfo("1", "2"));
     }
 }

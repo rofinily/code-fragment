@@ -1,7 +1,5 @@
 package me.anchore.util;
 
-import me.anchore.io.util.IoUtil;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -73,7 +71,7 @@ public class FileUtil {
         return f1.getCanonicalPath().equals(f2.getCanonicalPath());
     }
 
-    private static void copy(File src, File dest, boolean destIsDir) throws IOException {
+    private static void copy(File src, File dest, boolean destIsDir) {
         if (src.isDirectory()) {
             copyDir(src, dest);
             return;
@@ -94,7 +92,7 @@ public class FileUtil {
         copyFile(src, destFile);
     }
 
-    private static void copyDir(File src, File dest) throws IOException {
+    private static void copyDir(File src, File dest) {
         if (!src.exists()) {
             return;
         }
@@ -118,15 +116,14 @@ public class FileUtil {
         }
     }
 
-    private static void copyFile(File src, File dest) throws IOException {
-        FileChannel ich = null;
-        FileChannel och = null;
-        try {
-            ich = new FileInputStream(src).getChannel();
-            och = new FileOutputStream(dest).getChannel();
+    private static void copyFile(File src, File dest) {
+        try (FileChannel ich = new FileInputStream(src).getChannel();
+             FileChannel och = new FileOutputStream(dest).getChannel()) {
             ich.transferTo(0, ich.size(), och);
-        } finally {
-            IoUtil.close(ich, och);
+
+            dest.setLastModified(src.lastModified());
+        } catch (IOException e) {
+            delete(dest);
         }
     }
 }
