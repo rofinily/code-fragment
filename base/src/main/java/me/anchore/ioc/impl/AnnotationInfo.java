@@ -22,4 +22,8 @@ public class AnnotationInfo extends ReflectItem {
     <T> T getProperty(String name) {
         return (T) properties.get(name);
     }
+
+    boolean containsProperty(String name) {
+        return properties.containsKey(name);
+    }
 }

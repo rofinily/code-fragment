@@ -38,7 +38,7 @@ public class StopWatchTest {
                 e.printStackTrace();
                 return -1L;
             }
-        }).peek(System.out::println).allMatch(cost -> cost >= 100 && cost < 110);
+        }).peek(System.out::println).allMatch(cost -> cost >= 100 && cost < 150);
 
         Assert.assertTrue(result);
 

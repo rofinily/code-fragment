@@ -1,5 +1,7 @@
 package me.anchore.ioc.impl;
 
+import me.anchore.ioc.Bean;
+import me.anchore.ioc.Bean.Scope;
 import me.anchore.ioc.BeanException;
 import me.anchore.ioc.BeanFactory;
 import me.anchore.ioc.BeanNotFoundException;
@@ -7,6 +9,7 @@ import me.anchore.ioc.BeanScanner;
 import me.anchore.ioc.Inject;
 import me.anchore.ioc.impl.DirectedAcyclicGraph.Node;
 import me.anchore.log.Loggers;
+import me.anchore.util.Strings;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -23,94 +26,108 @@ import java.util.Set;
  */
 public class Beans implements BeanFactory {
 
-    private Map<String, Object> idToBean = new HashMap<>();
+    private Map<String, Object> singletons = new HashMap<>();
+
+    private Map<String, Class<?>> prototypes = new HashMap<>();
 
     private BeanScanner beanScanner = new ClassPathBeanScanner();
 
     @Override
     public <T> T getBean(Class<T> c) throws BeanException {
-        if (!idToBean.containsKey(c.getName())) {
+        if (!singletons.containsKey(c.getName())) {
             throw new BeanException(String.format("no such bean of type %s", c.getName()));
         }
-        return (T) idToBean.get(c.getName());
+        return (T) singletons.get(c.getName());
     }
 
     @Override
     public <T> T getBean(String beanId) throws BeanException {
-        if (!idToBean.containsKey(beanId)) {
+        if (!singletons.containsKey(beanId)) {
             throw new BeanException(String.format("no such bean of id %s", beanId));
         }
-        return (T) idToBean.get(beanId);
+        return (T) singletons.get(beanId);
     }
 
     @Override
     public <T> T getBean(String beanId, Object... args) throws BeanException {
-        Class<T> c = (Class<T>) idToBean.get(beanId);
+        Class<T> c = (Class<T>) prototypes.get(beanId);
         try {
             Constructor<T> constructor = c.getConstructor(Arrays.stream(args).map(Object::getClass).toArray(Class[]::new));
-            constructor.setAccessible(true);
+            if (!constructor.isAccessible()) {
+                constructor.setAccessible(true);
+            }
             return constructor.newInstance(args);
-        } catch (Exception e) {
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new BeanException(e);
         }
     }
 
     private void init() {
-        Map<ClassInfo, Node<ClassInfo>> nodes = new HashMap<>();
+        Map<BeanInfo, Node<BeanInfo>> nodes = new HashMap<>();
         scanBeanInfo(nodes);
         initBean(nodes);
     }
 
-    private void scanBeanInfo(Map<ClassInfo, Node<ClassInfo>> nodes) {
-        Set<BeanInfo> beanInfos = beanScanner.scan("me.anchore.ioc");
+    private void scanBeanInfo(Map<BeanInfo, Node<BeanInfo>> nodes) {
+        Set<BeanInfo> beanInfos = beanScanner.scan("me/anchore/ioc");
         for (BeanInfo beanInfo : beanInfos) {
             ClassInfo classInfo = beanInfo.getClassInfo();
-            if (!nodes.containsKey(classInfo)) {
-                nodes.put(classInfo, new Node<>(classInfo));
+            if (!nodes.containsKey(beanInfo)) {
+                nodes.put(beanInfo, new Node<>(beanInfo));
             }
             for (FieldInfo f : classInfo.getFieldInfos()) {
                 if (f.isAnnotationPresent(Inject.class)) {
-                    ClassInfo fieldClassInfo = findClassInfo(f.getTypeName(), beanInfos);
-                    if (!nodes.containsKey(fieldClassInfo)) {
-                        nodes.put(fieldClassInfo, new Node<>(fieldClassInfo));
+                    String injectBeanId = f.getAnnotationInfo(Inject.class).getProperty("value");
+                    String beanId = Strings.isEmpty(injectBeanId) ? f.getTypeName() : injectBeanId;
+                    BeanInfo fieldBeanInfo = findBeanInfo(beanId, beanInfos);
+                    if (!nodes.containsKey(fieldBeanInfo)) {
+                        nodes.put(fieldBeanInfo, new Node<>(fieldBeanInfo));
                     }
-                    nodes.get(classInfo).addSource(nodes.get(fieldClassInfo));
+                    nodes.get(beanInfo).addSource(nodes.get(fieldBeanInfo));
                 }
             }
         }
     }
 
-    private ClassInfo findClassInfo(String typeName, Set<BeanInfo> beanInfos) {
+    private BeanInfo findBeanInfo(String beanId, Set<BeanInfo> beanInfos) {
         for (BeanInfo beanInfo : beanInfos) {
-            ClassInfo classInfo = beanInfo.getClassInfo();
-            if (typeName.equals(classInfo.getName())) {
-                return classInfo;
+            if (beanInfo.getId().equals(beanId)) {
+                return beanInfo;
             }
         }
-        throw BeanNotFoundException.ofType(typeName);
+        throw BeanNotFoundException.ofId(beanId);
     }
 
-    private void initBean(Map<ClassInfo, Node<ClassInfo>> nodes) {
+    private void initBean(Map<BeanInfo, Node<BeanInfo>> nodes) {
         new DirectedAcyclicGraph<>(new HashSet<>(nodes.values())).topoSort(node -> {
             try {
-                ClassInfo classInfo = node.getKey();
+                BeanInfo beanInfo = node.getKey();
+                ClassInfo classInfo = beanInfo.getClassInfo();
+                Scope scope = Bean.Scope.valueOf(classInfo.getAnnotationInfo(Bean.class).getProperty("scope"));
                 Class<?> c = Class.forName(classInfo.getName());
-                Constructor<?> constructor = c.getDeclaredConstructor();
-                if (!constructor.isAccessible()) {
-                    constructor.setAccessible(true);
-                }
-                Object instance = constructor.newInstance();
-                idToBean.put(classInfo.getName(), instance);
-
-                for (FieldInfo fieldInfo : classInfo.getFieldInfos()) {
-                    if (fieldInfo.isAnnotationPresent(Inject.class)) {
-                        Field field = c.getDeclaredField(fieldInfo.getName());
-                        if (!field.isAccessible()) {
-                            field.setAccessible(true);
+                switch (scope) {
+                    case SINGLETON:
+                        Constructor<?> constructor = c.getDeclaredConstructor();
+                        if (!constructor.isAccessible()) {
+                            constructor.setAccessible(true);
                         }
-                        field.set(instance, idToBean.get(fieldInfo.getTypeName()));
-                    }
+                        Object instance = constructor.newInstance();
+                        singletons.put(beanInfo.getId(), instance);
+                        for (FieldInfo fieldInfo : classInfo.getFieldInfos()) {
+                            if (fieldInfo.isAnnotationPresent(Inject.class)) {
+                                Field field = c.getDeclaredField(fieldInfo.getName());
+                                if (!field.isAccessible()) {
+                                    field.setAccessible(true);
+                                }
+                                field.set(instance, singletons.get(fieldInfo.getTypeName()));
+                            }
+                        }
+                        break;
+                    case PROTOTYPE:
+                        prototypes.put(beanInfo.getId(), c);
+                    default:
                 }
+
             } catch (IllegalAccessException | ClassNotFoundException | NoSuchFieldException | NoSuchMethodException | InstantiationException | InvocationTargetException e) {
                 Loggers.getLogger().error(e);
             }

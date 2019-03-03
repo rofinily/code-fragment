@@ -1,5 +1,6 @@
 package me.anchore.ioc;
 
+import me.anchore.ioc.Bean.Scope;
 import me.anchore.ioc.impl.Beans;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,8 +17,24 @@ public class BeanFactoryTest {
 
     @Test
     public void test() {
-        Beans.get();
+        Beans.get().getBean("f", "asf");
+        Beans.get().getBean("g");
     }
+}
+
+@Bean(value = "f", scope = Scope.PROTOTYPE)
+class F {
+    private String s;
+
+    public F(String s) {
+        this.s = s;
+    }
+}
+
+@Bean("g")
+class G {
+    @Inject
+    A a;
 }
 
 @Bean

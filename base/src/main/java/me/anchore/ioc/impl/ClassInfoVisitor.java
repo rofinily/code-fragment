@@ -1,9 +1,11 @@
 package me.anchore.ioc.impl;
 
-import jdk.internal.org.objectweb.asm.AnnotationVisitor;
-import jdk.internal.org.objectweb.asm.ClassVisitor;
-import jdk.internal.org.objectweb.asm.FieldVisitor;
-import jdk.internal.org.objectweb.asm.Opcodes;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Opcodes;
+
+import java.util.function.Consumer;
 
 /**
  * @author anchore
@@ -13,8 +15,11 @@ public class ClassInfoVisitor extends ClassVisitor {
 
     private ClassInfo classInfo = new ClassInfo();
 
-    public ClassInfoVisitor() {
+    private Consumer<ClassInfo> classInfoConsumer;
+
+    ClassInfoVisitor(Consumer<ClassInfo> classInfoConsumer) {
         super(Opcodes.ASM5);
+        this.classInfoConsumer = classInfoConsumer;
     }
 
     @Override
@@ -32,7 +37,9 @@ public class ClassInfoVisitor extends ClassVisitor {
         return new FieldInfoVisitor(name, desc, classInfo::addFieldInfo);
     }
 
-    public ClassInfo getClassInfo() {
-        return classInfo;
+    @Override
+    public void visitEnd() {
+        classInfoConsumer.accept(classInfo);
+        classInfo = new ClassInfo();
     }
 }
