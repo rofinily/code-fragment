@@ -5,8 +5,6 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -26,6 +24,31 @@ public class AnnotationInfoVisitor extends AnnotationVisitor {
         this.desc = desc;
         this.annotationInfo = new AnnotationInfo(ReflectUtil.toTypeName(desc));
         this.annotationConsumer = annotationConsumer;
+    }
+
+    @Override
+    public void visit(String name, Object value) {
+        if (value != null) {
+            annotationInfo.setProperty(name, value);
+        }
+    }
+
+    @Override
+    public void visitEnum(String name, String desc, String value) {
+        if (value != null) {
+            annotationInfo.setProperty(name, value);
+        }
+    }
+
+    @Override
+    public AnnotationVisitor visitArray(String name) {
+        return new AnnotationArrayValueVisitor(values -> annotationInfo.setProperty(name, values));
+    }
+
+    @Override
+    public void visitEnd() {
+        setDefaultValues();
+        annotationConsumer.accept(annotationInfo);
     }
 
     private void setDefaultValues() {
@@ -52,30 +75,7 @@ public class AnnotationInfoVisitor extends AnnotationVisitor {
 
                             @Override
                             public AnnotationVisitor visitArray(String name) {
-                                return new AnnotationVisitor(Opcodes.ASM5) {
-                                    List<Object> values = new ArrayList<>();
-
-                                    @Override
-                                    public void visit(String name, Object value) {
-                                        if (value != null) {
-                                            values.add(value);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void visitEnum(String name, String desc, String value) {
-                                        if (value != null) {
-                                            values.add(value);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void visitEnd() {
-                                        if (!values.isEmpty()) {
-                                            annotationInfo.setProperty(methodName, values);
-                                        }
-                                    }
-                                };
+                                return new AnnotationArrayValueVisitor(values -> annotationInfo.setProperty(methodName, values));
                             }
                         };
                     }
@@ -84,51 +84,4 @@ public class AnnotationInfoVisitor extends AnnotationVisitor {
         });
     }
 
-    @Override
-    public void visit(String name, Object value) {
-        if (value != null) {
-            annotationInfo.setProperty(name, value);
-        }
-    }
-
-    @Override
-    public void visitEnum(String name, String desc, String value) {
-        if (value != null) {
-            annotationInfo.setProperty(name, value);
-        }
-    }
-
-    @Override
-    public AnnotationVisitor visitArray(String name) {
-        return new AnnotationVisitor(Opcodes.ASM5) {
-            List<Object> values = new ArrayList<>();
-
-            @Override
-            public void visit(String name, Object value) {
-                if (value != null) {
-                    values.add(value);
-                }
-            }
-
-            @Override
-            public void visitEnum(String name, String desc, String value) {
-                if (value != null) {
-                    values.add(value);
-                }
-            }
-
-            @Override
-            public void visitEnd() {
-                if (!values.isEmpty()) {
-                    annotationInfo.setProperty(name, values);
-                }
-            }
-        };
-    }
-
-    @Override
-    public void visitEnd() {
-        setDefaultValues();
-        annotationConsumer.accept(annotationInfo);
-    }
 }
