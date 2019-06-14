@@ -29,12 +29,13 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>${mockito-core.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
-        <outputDirectory>${user.dir}/target/classes/main</outputDirectory>
-        <testOutputDirectory>${user.dir}/target/classes/test</testOutputDirectory>
+        <outputDirectory>${user.dir}/target/classes</outputDirectory>
+        <testOutputDirectory>${user.dir}/target/test-classes</testOutputDirectory>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -44,6 +45,9 @@
                     <target>8</target>
                     <testSource>8</testSource>
                     <testTarget>8</testTarget>
+                    <excludes>
+                        <exclude>me/anchore/draft/**/*.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
