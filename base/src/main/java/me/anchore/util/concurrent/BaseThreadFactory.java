@@ -43,6 +43,10 @@ abstract class BaseThreadFactory implements ThreadFactory {
         return name.substring(name.lastIndexOf('.') + 1);
     }
 
+    static String getSimpleName(String className) {
+        return className.substring(className.lastIndexOf('.') + 1);
+    }
+
     @Override
     public Thread newThread(Runnable r) {
         if (r == null) {

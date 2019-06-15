@@ -2,7 +2,6 @@ package me.anchore.log.impl;
 
 import me.anchore.log.Logger;
 import me.anchore.log.LoggerFactory;
-import me.anchore.log.impl.Ansi.Color;
 import me.anchore.util.Pair;
 
 import java.time.LocalDateTime;
@@ -20,7 +19,7 @@ public class SystemLogger extends BaseLogger {
     @Override
     public void debug(String msg, Object... args) {
         Pair<String, Optional<Throwable>> pair = MsgFmt.fmt(msg, args);
-        System.out.printf("%s %s %s %s%n", now(), Thread.currentThread().getName(), Color.DEFAULT.highlightForeground("DEBUG"), pair.getKey());
+        System.out.printf("%s %s %s %s%n", now(), Thread.currentThread().getName(), AnsiColor.DEFAULT.highlightForeground("DEBUG"), pair.getKey());
         pair.getValue().ifPresent(t -> t.printStackTrace(System.out));
     }
 
@@ -31,21 +30,21 @@ public class SystemLogger extends BaseLogger {
     @Override
     public void info(String msg, Object... args) {
         Pair<String, Optional<Throwable>> pair = MsgFmt.fmt(msg, args);
-        System.out.printf("%s %s %s %s%n", now(), Thread.currentThread().getName(), Color.CYAN.highlightForeground("INFO"), pair.getKey());
+        System.out.printf("%s %s %s %s%n", now(), Thread.currentThread().getName(), AnsiColor.CYAN.highlightForeground("INFO"), pair.getKey());
         pair.getValue().ifPresent(t -> t.printStackTrace(System.out));
     }
 
     @Override
     public void warn(String msg, Object... args) {
         Pair<String, Optional<Throwable>> pair = MsgFmt.fmt(msg, args);
-        System.out.printf("%s %s %s %s%n", now(), Thread.currentThread().getName(), Color.YELLOW.highlightForeground("WARN"), pair.getKey());
+        System.out.printf("%s %s %s %s%n", now(), Thread.currentThread().getName(), AnsiColor.YELLOW.highlightForeground("WARN"), pair.getKey());
         pair.getValue().ifPresent(t -> t.printStackTrace(System.out));
     }
 
     @Override
     public void error(String msg, Object... args) {
         Pair<String, Optional<Throwable>> pair = MsgFmt.fmt(msg, args);
-        System.out.printf("%s %s %s %s%n", now(), Thread.currentThread().getName(), Color.RED.highlightForeground("ERROR"), pair.getKey());
+        System.out.printf("%s %s %s %s%n", now(), Thread.currentThread().getName(), AnsiColor.RED.highlightForeground("ERROR"), pair.getKey());
         pair.getValue().ifPresent(t -> t.printStackTrace(System.err));
     }
 

@@ -3,6 +3,7 @@ package me.anchore.util;
 /**
  * @author anchore
  */
+@Deprecated
 public class Crasher {
     public static <T> T crash(String msg, Throwable t) {
         throw new CrashException(msg, t);
