@@ -49,6 +49,9 @@
                     <excludes>
                         <exclude>**/me/anchore/draft/**/*.java</exclude>
                     </excludes>
+                    <testExcludes>
+                        <testExclude>**/me/anchore/draft/**/*.java</testExclude>
+                    </testExcludes>
                 </configuration>
             </plugin>
         </plugins>
