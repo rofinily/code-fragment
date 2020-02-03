@@ -2,15 +2,9 @@ package me.anchore.util;
 
 import me.anchore.io.Releasable;
 import me.anchore.log.Loggers;
-import sun.misc.Cleaner;
-import sun.nio.ch.DirectBuffer;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 /**
  * @author anchore
@@ -46,26 +40,6 @@ public class IoUtil {
             for (Releasable releasable : releasables) {
                 release(releasable);
             }
-        }
-    }
-
-    public static void release(MappedByteBuffer buf) {
-        if (buf != null) {
-            buf.force();
-            release((ByteBuffer) buf);
-        }
-    }
-
-    public static void release(final ByteBuffer buf) {
-        if (buf != null && buf.isDirect()) {
-            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-                Cleaner cleaner = ((DirectBuffer) buf).cleaner();
-                if (cleaner != null) {
-                    cleaner.clean();
-                    cleaner.clear();
-                }
-                return null;
-            });
         }
     }
 }

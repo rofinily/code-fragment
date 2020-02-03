@@ -5,9 +5,6 @@ import me.anchore.log.Loggers;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 /**
  * @author anchore
@@ -43,16 +40,6 @@ public class IoUtil {
             for (Releasable releasable : releasables) {
                 release(releasable);
             }
-        }
-    }
-
-    public static void release(final ByteBuffer buf) {
-        if (buf != null && buf.isDirect()) {
-            AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-                // fixme jdk11 不能用
-//                FileChannelImpl.class.getMethod("unmap", MappedByteBuffer.class);
-                return null;
-            });
         }
     }
 }

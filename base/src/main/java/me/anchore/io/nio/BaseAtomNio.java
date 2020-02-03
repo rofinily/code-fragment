@@ -124,7 +124,6 @@ abstract class BaseAtomNio<T> extends BaseNio implements Io<T> {
         currentFilePage = -1;
         currentStart = -1;
         if (discardBuf) {
-            IoUtil.release(buf);
             buf = null;
         }
     }
