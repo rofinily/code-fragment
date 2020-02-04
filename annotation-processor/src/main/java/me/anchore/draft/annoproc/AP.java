@@ -26,7 +26,7 @@ public class AP extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         for (TypeElement annotation : annotations) {
-            annotation.getSimpleName()
+            annotation.getSimpleName();
         }
         processingEnv.getMessager().printMessage(Kind.NOTE, annotations.toString());
         processingEnv.getMessager().printMessage(Kind.NOTE, roundEnv.getElementsAnnotatedWith(A.class).toString());

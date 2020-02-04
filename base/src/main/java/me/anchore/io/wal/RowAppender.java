@@ -15,7 +15,7 @@ public class RowAppender implements Closeable {
 
     public RowAppender(Meta meta) {
         this.meta = meta;
-        BufferRoller bufferRoller = new BufferRoller(Paths.get("./data"), 4 << 10);
+        BufferRoller bufferRoller = new BufferRoller(Paths.get("./data"), 4L << 10);
         bufferAppenders = IntStream.range(0, meta.getColumnCount()).mapToObj(meta::getType).map(type -> {
             switch (type) {
                 case BYTE:
@@ -46,17 +46,15 @@ public class RowAppender implements Closeable {
 //        final byte[] bytes = Files.readAllBytes(Paths.get("./data"));
         new File("./data").delete();
         final Random r = new Random();
-        final byte[] bytes = new byte[16];
         final Row[] rows = Stream.generate(() -> {
-            r.nextBytes(bytes);
             return new ListRow(
                     (byte) r.nextInt(255),
                     r.nextLong(),
-                    new String(bytes),
+                    "new String(bytes)",
                     r.nextDouble(),
                     r.nextInt()
             );
-        }).limit(100_0000).toArray(Row[]::new);
+        }).limit(200_0000).toArray(Row[]::new);
         final long start = System.currentTimeMillis();
         try (RowAppender rowAppender = new RowAppender(new MetaImpl())) {
             for (Row row : rows) {

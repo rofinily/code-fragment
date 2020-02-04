@@ -32,8 +32,19 @@ abstract class BufferAppender<V> implements Closeable {
             void append(Integer v) {
                 try {
                     bufferRoller.getCurrentBuffer().putInt(v == null ? 0 : v);
-                } catch (NullPointerException | BufferOverflowException e) {
+                } catch (NullPointerException e) {
                     bufferRoller.rollToNextBuffer().putInt(v == null ? 0 : v);
+                } catch (BufferOverflowException e) {
+                    int val = v == null ? 0 : v;
+                    for (int shift = Integer.SIZE - Byte.SIZE;
+                         shift >= 0; shift -= Byte.SIZE) {
+                        byte b = (byte) ((val >> shift) & 0xFF);
+                        try {
+                            bufferRoller.getCurrentBuffer().put(b);
+                        } catch (BufferOverflowException ex) {
+                            bufferRoller.rollToNextBuffer().put(b);
+                        }
+                    }
                 }
             }
         };
@@ -45,8 +56,19 @@ abstract class BufferAppender<V> implements Closeable {
             void append(Long v) {
                 try {
                     bufferRoller.getCurrentBuffer().putLong(v == null ? 0 : v);
-                } catch (NullPointerException | BufferOverflowException e) {
+                } catch (NullPointerException e) {
                     bufferRoller.rollToNextBuffer().putLong(v == null ? 0 : v);
+                } catch (BufferOverflowException e) {
+                    long val = v == null ? 0 : v;
+                    for (int shift = Long.SIZE - Byte.SIZE;
+                         shift >= 0; shift -= Byte.SIZE) {
+                        byte b = (byte) ((val >> shift) & 0xFF);
+                        try {
+                            bufferRoller.getCurrentBuffer().put(b);
+                        } catch (BufferOverflowException ex) {
+                            bufferRoller.rollToNextBuffer().put(b);
+                        }
+                    }
                 }
             }
         };
@@ -58,8 +80,19 @@ abstract class BufferAppender<V> implements Closeable {
             void append(Double v) {
                 try {
                     bufferRoller.getCurrentBuffer().putDouble(v == null ? 0 : v);
-                } catch (NullPointerException | BufferOverflowException e) {
+                } catch (NullPointerException e) {
                     bufferRoller.rollToNextBuffer().putDouble(v == null ? 0 : v);
+                } catch (BufferOverflowException e) {
+                    long val = v == null ? 0 : Double.doubleToLongBits(v);
+                    for (int shift = Long.SIZE - Byte.SIZE;
+                         shift >= 0; shift -= Byte.SIZE) {
+                        byte b = (byte) ((val >> shift) & 0xFF);
+                        try {
+                            bufferRoller.getCurrentBuffer().put(b);
+                        } catch (BufferOverflowException ex) {
+                            bufferRoller.rollToNextBuffer().put(b);
+                        }
+                    }
                 }
             }
         };
@@ -71,8 +104,19 @@ abstract class BufferAppender<V> implements Closeable {
             void append(String v) {
                 try {
                     bufferRoller.getCurrentBuffer().putInt(v == null ? 0 : v.length());
-                } catch (NullPointerException | BufferOverflowException e) {
-                    bufferRoller.rollToNextBuffer().putInt(v == null ? 0 : v.length());
+                } catch (NullPointerException e) {
+                    bufferRoller.getCurrentBuffer().putInt(v == null ? 0 : v.length());
+                } catch (BufferOverflowException e) {
+                    int val = v == null ? 0 : v.length();
+                    for (int shift = Integer.SIZE - Byte.SIZE;
+                         shift >= 0; shift -= Byte.SIZE) {
+                        byte b = (byte) ((val >> shift) & 0xFF);
+                        try {
+                            bufferRoller.getCurrentBuffer().put(b);
+                        } catch (BufferOverflowException ex) {
+                            bufferRoller.rollToNextBuffer().put(b);
+                        }
+                    }
                 }
                 if (v != null) {
                     for (byte b : v.getBytes(StandardCharsets.UTF_8)) {
