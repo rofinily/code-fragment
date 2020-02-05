@@ -30,11 +30,11 @@ public class JavaSerializer implements Serializer {
     }
 
     @Override
-    public <T> T deserialize(InputStream in) throws SerializeException {
+    public <T> T deserialize(InputStream in, Class<T> klass) throws SerializeException {
         Assert.notNull(in);
 
         try (ObjectInputStream objIn = new ObjectInputStream(in)) {
-            return (T) objIn.readObject();
+            return klass.cast(objIn.readObject());
         } catch (IOException | ClassNotFoundException e) {
             throw new SerializeException(e);
         }

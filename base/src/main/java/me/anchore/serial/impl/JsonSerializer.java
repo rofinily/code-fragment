@@ -29,11 +29,11 @@ public class JsonSerializer implements Serializer {
     }
 
     @Override
-    public <T> T deserialize(InputStream in) throws SerializeException {
+    public <T> T deserialize(InputStream in, Class<T> klass) throws SerializeException {
         try (InputStreamReader reader = new InputStreamReader(in)) {
             CharBuffer charBuffer = CharBuffer.allocate(in.available());
             reader.read(charBuffer);
-            return JsonUtil.parse(charBuffer.toString(), null);
+            return JsonUtil.parse(charBuffer.toString(), klass);
         } catch (IOException | JsonException e) {
             throw new SerializeException(e);
         }

@@ -11,5 +11,5 @@ public interface Serializer {
 
     <T> void serialize(T t, OutputStream out) throws SerializeException;
 
-    <T> T deserialize(InputStream in) throws SerializeException;
+    <T> T deserialize(InputStream in, Class<T> klass) throws SerializeException;
 }

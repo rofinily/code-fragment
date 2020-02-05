@@ -19,7 +19,7 @@ public class SerializerTest {
         ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
         Object oldObj = "anchore";
         serializer.serialize(oldObj, bytesOut);
-        Object newObj = serializer.deserialize(new ByteArrayInputStream(bytesOut.toByteArray()));
+        Object newObj = serializer.deserialize(new ByteArrayInputStream(bytesOut.toByteArray()), Object.class);
 
         Assert.assertEquals(oldObj, newObj);
     }
